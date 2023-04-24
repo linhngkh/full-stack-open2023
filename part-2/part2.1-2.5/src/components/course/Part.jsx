@@ -18,7 +18,7 @@ const Part = ({ course: { parts } }) => {
       <h5>
         {parts[3].name} {parts[3].exercises}
       </h5>
-      <p>total of {total} exercises</p>
+      <strong>total of {total} exercises</strong>
     </div>
   );
 };
