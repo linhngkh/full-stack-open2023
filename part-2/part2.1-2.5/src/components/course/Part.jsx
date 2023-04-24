@@ -19,30 +19,25 @@ const Part = ({ courses }) => {
   }, 0);
 
   const partNames1 = courses[0].parts.map((part, id) => (
-    <li key={id}>{part.name}</li>
+    <li key={id}>
+      {part.name} {part.exercises}
+    </li>
   ));
 
-  const partExercise1 = courses[0].parts.map((part, id) => (
-    <li key={id}>{part.exercises}</li>
-  ));
   const partNames2 = courses[1].parts.map((part, id) => (
-    <li key={id}>{part.name}</li>
-  ));
-
-  const partExercise2 = courses[1].parts.map((part, id) => (
-    <li key={id}>{part.exercises}</li>
+    <li key={id}>
+      {part.name} {part.exercises}
+    </li>
   ));
 
   return (
     <div>
-      <div>
-        {partNames1} {partExercise1}
-      </div>
-      <p>total of {total1}</p>
-      <p>
-        {partNames2} {partExercise2}
-      </p>
-      <p>total of {total2}</p>
+      <div>{partNames1}</div>
+      <strong>total of {total1} exercises</strong>
+      <h2>{courses[1].name}</h2>
+      <p>{partNames2}</p>
+      <strong>total of {total2} exercises</strong>
+      <br />
       <strong>total of {total} exercises</strong>
     </div>
   );
