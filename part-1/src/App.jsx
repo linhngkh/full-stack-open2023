@@ -14,6 +14,7 @@ const App = () => {
       </div>
       <div>
         <h1>Part 1.12 - 1.14</h1>
+       
         <Anecdotes />
       </div>
     </div>

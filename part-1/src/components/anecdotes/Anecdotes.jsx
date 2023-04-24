@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import MostVoted from "./MostVoted";
 const anecdotes = [
   "If it hurts, do it more often.",
   "Adding manpower to a late software project makes it later!",
@@ -29,6 +30,7 @@ const Anecdotes = () => {
 
   return (
     <div>
+      <h2>Anecdote of the day</h2>
       <div>
         {" "}
         <p>{anecdotes[selected]}</p>{" "}
@@ -37,6 +39,10 @@ const Anecdotes = () => {
       <div>
         <button onClick={randomVote}>vote</button>
         <button onClick={randomAnecdote}>next anecdote</button>
+      </div>
+      <div>
+        <h2>Anecdote with most votes</h2>
+        <MostVoted votes={votes} anecdotes={anecdotes} />
       </div>
     </div>
   );
