@@ -1,28 +1,16 @@
 import React from "react";
-import Header from "./components/Header";
-import Content from "./components/Content";
-import Total from "./components/Total";
+import FirstPart from "./components/parts1.1-1.5/FirstPart";
+import SecondPart from "./components/part1.6-1.14/SecondPart";
 const App = () => {
-  const course = "Half Stack application development";
-  const parts = [
-    {
-      name: "Fundamentals of React",
-      exercises: 10,
-    },
-    {
-      name: "Using props to pass data",
-      exercises: 7,
-    },
-    {
-      name: "State of a component",
-      exercises: 14,
-    },
-  ];
   return (
     <div>
-      <Header course={course} />
-      <Content parts={parts} />
-      <Total parts={parts} />
+      <div>
+        <h1>Part 1.1 -1.5</h1> <FirstPart />
+      </div>
+      <div>
+        <h1>Part1.6-1.14</h1>
+        <SecondPart />
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
-import Part1 from "./parts/Part1";
-import Part2 from "./parts/Part2";
-import Part3 from "./parts/Part3";
+import Part1 from "./content/Part1";
+import Part2 from "./content/Part2";
+import Part3 from "./content/Part3";
 
 const Content = ({ parts }) => {
   return (
