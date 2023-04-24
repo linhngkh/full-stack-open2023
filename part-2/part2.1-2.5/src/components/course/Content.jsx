@@ -1,9 +1,9 @@
 import React from "react";
 import Part from "./Part";
-const Content = ({ course }) => {
+const Content = ({ courses }) => {
   return (
     <div>
-      <Part course={course} />
+      <Part courses={courses} />
     </div>
   );
 };
