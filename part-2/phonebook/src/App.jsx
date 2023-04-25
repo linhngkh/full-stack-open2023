@@ -3,6 +3,7 @@ import Persons from "./components/Persons";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import phoneBookService from "./services/server";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -16,7 +17,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [successAdded, setSuccessAdded] = useState("");
-  const [error, setError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     phoneBookService.getAll().then((initialValues) => {
@@ -42,10 +43,9 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault();
-    // define a variable to check if the name is already existed with an alert
+    // define a variable to check if the name is already existed
     const nameExist = persons.filter((person) => person.name === newName);
     if (nameExist.length === 0) {
-      alert(`${newName} is already added to phonebook`);
       // create a new object for the note
       const nameObject = {
         name: newName,
@@ -53,6 +53,7 @@ const App = () => {
         // generate a unique identifier for each new person added to the phonebook
         id: persons.length + 1,
       };
+
       // send the data to the backend server
       phoneBookService
         .create(nameObject)
@@ -61,16 +62,19 @@ const App = () => {
           // reset input
           setNewName("");
           setNewNumber("");
-          setSuccessAdded(`Added ${newName}`);
+          //notification
+          setSuccessAdded(`Added ${newName}!`);
+          setTimeout(() => {
+            setSuccessAdded(null);
+          }, 3000);
         })
-
         .catch((error) => {
           console.log(error);
-          setError(error.response.data.error);
+          setErrorMessage(error.response.data.error);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 3000);
         });
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
     } else {
       if (window.confirm(`Update ${nameExist[0].name}?`)) {
         const personFound = persons.find(
@@ -86,10 +90,12 @@ const App = () => {
           )
           .catch((error) => {
             console.log(error);
-            setError(`${personFound.name} was already deleted from server`);
+            setErrorMessage(
+              `${personFound.name} was already deleted from server`
+            );
           });
         setTimeout(() => {
-          setError(null);
+          setErrorMessage(null);
         }, 3000);
         setPersons(persons.filter((p) => p.id !== personFound.id));
       }
@@ -108,7 +114,7 @@ const App = () => {
         })
         .catch((error) => {
           console.log(error);
-          setError(error.message);
+          setErrorMessage(error.message);
         });
     }
   };
@@ -129,13 +135,19 @@ const App = () => {
       })
       .catch((error) => {
         console.log(error);
-        setError(error.message);
+        setErrorMessage(error.message);
       });
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      {successAdded ? (
+        <Notification message={successAdded} />
+      ) : errorMessage ? (
+        <Notification message={errorMessage} />
+      ) : null}
+
       <Filter filterHandle={filterHandle} filterByName={filterByName} />
       <h2>Add a new</h2>
       <PersonForm
