@@ -6,7 +6,7 @@ const Persons = ({ person, deletePerson }) => {
       <h4>
         {person.name} - {person.number}
       </h4>
-      <button onClick={deletePerson}>delete</button>
+      <button onClick={() => deletePerson(person)}>delete</button>
     </div>
   );
 };

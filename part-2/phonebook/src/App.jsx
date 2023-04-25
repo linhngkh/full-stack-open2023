@@ -43,10 +43,9 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault();
     // define a variable to check if the name is already existed with an alert
-    const nameExist = persons.find((person) => person.name === newName);
-    if (nameExist) {
+    const nameExist = persons.filter((person) => person.name === newName);
+    if (nameExist.length === 0) {
       alert(`${newName} is already added to phonebook`);
-    } else {
       // create a new object for the note
       const nameObject = {
         name: newName,
@@ -72,37 +71,48 @@ const App = () => {
       setTimeout(() => {
         setError(null);
       }, 3000);
-    }
-    if (window.confirm(`Update ${nameExist.name}?`)) {
-      const personFound = persons.find((person) => person.id === nameExist.id);
-      const changePerson = { ...personFound, number: newNumber };
-      phoneBookService
-        .update(changePerson.id, changePerson)
-        .then(
-          setPersons(
-            persons.map((p) => (p.id !== changePerson.id ? p : changePerson))
+    } else {
+      if (window.confirm(`Update ${nameExist[0].name}?`)) {
+        const personFound = persons.find(
+          (person) => person.id === nameExist[0].id
+        );
+        const changePerson = { ...personFound, number: newNumber };
+        phoneBookService
+          .update(changePerson.id, changePerson)
+          .then(
+            setPersons(
+              persons.map((p) => (p.id !== changePerson.id ? p : changePerson))
+            )
           )
-        )
-        .catch((error) => {
-          console.log(error);
-          setError(`${personFound.name} was already deleted from server`);
-        });
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-      setPersons(persons.filter((p) => p.id !== personFound.id));
+          .catch((error) => {
+            console.log(error);
+            setError(`${personFound.name} was already deleted from server`);
+          });
+        setTimeout(() => {
+          setError(null);
+        }, 3000);
+        setPersons(persons.filter((p) => p.id !== personFound.id));
+      }
     }
   };
 
-  const deletePerson = (person) => {
-    if (window.confirm(`Delete ${person.name}?`)) {
-      const newPerson = persons.filter((p) => p.id !== person.id);
-      phoneBookService.deletePerson(person.id).then(() => {
-        setPersons(newPerson);
-      });
+  const deletePerson = (personToDelete) => {
+    const confirmed = window.confirm(`Delete ${personToDelete.name}`);
+    const newPerson = persons.filter((p) => p.id !== personToDelete.id);
+    if (confirmed) {
+      phoneBookService
+        .deletePerson()
+        .then(() => {
+          setPersons(newPerson);
+          setSuccessAdded(`Deleted ${personToDelete.name}`);
+        })
+        .catch((error) => {
+          console.log(error);
+          setError(error.message);
+        });
     }
   };
-// step10
+  // step10
   const updatePerson = (personToUpdate) => {
     const updatedPerson = { ...personToUpdate, number: newNumber };
     phoneBookService
