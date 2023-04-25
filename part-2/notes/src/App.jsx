@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Note from "./components/Note";
-
+import Footer from "./components/Footer";
 import noteService from "./services/notes";
 import Notification from "./components/Notification";
 
@@ -79,6 +79,7 @@ const App = () => {
         <input value={newNote} onChange={handleNoteChange} />
         <button type="submit">save</button>
       </form>
+      <Footer />
     </div>
   );
 };
