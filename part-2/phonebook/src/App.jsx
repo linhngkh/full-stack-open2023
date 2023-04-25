@@ -101,7 +101,7 @@ const App = () => {
     const newPerson = persons.filter((p) => p.id !== personToDelete.id);
     if (confirmed) {
       phoneBookService
-        .deletePerson()
+        .deletePerson(personToDelete.id)
         .then(() => {
           setPersons(newPerson);
           setSuccessAdded(`Deleted ${personToDelete.name}`);
