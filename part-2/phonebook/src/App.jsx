@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Persons from "./components/Persons";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
+import phoneBookService from "./services/server";
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: "Arto Hellas", number: "040-123456", id: 1 },
@@ -13,6 +15,14 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [successAdded, setSuccessAdded] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    phoneBookService.getAll().then((initialValues) => {
+      setPersons(initialValues);
+    });
+  }, []);
 
   const filterHandle = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
@@ -44,11 +54,73 @@ const App = () => {
         // generate a unique identifier for each new person added to the phonebook
         id: persons.length + 1,
       };
-      setPersons(persons.concat(nameObject));
-      // reset input
-      setNewName("");
-      setNewNumber("");
+      // send the data to the backend server
+      phoneBookService
+        .create(nameObject)
+        .then((newPerson) => {
+          setPersons(persons.concat(newPerson));
+          // reset input
+          setNewName("");
+          setNewNumber("");
+          setSuccessAdded(`Added ${newName}`);
+        })
+
+        .catch((error) => {
+          console.log(error);
+          setError(error.response.data.error);
+        });
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     }
+    if (window.confirm(`Update ${nameExist.name}?`)) {
+      const personFound = persons.find((person) => person.id === nameExist.id);
+      const changePerson = { ...personFound, number: newNumber };
+      phoneBookService
+        .update(changePerson.id, changePerson)
+        .then(
+          setPersons(
+            persons.map((p) => (p.id !== changePerson.id ? p : changePerson))
+          )
+        )
+        .catch((error) => {
+          console.log(error);
+          setError(`${personFound.name} was already deleted from server`);
+        });
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
+      setPersons(persons.filter((p) => p.id !== personFound.id));
+    }
+  };
+
+  const deletePerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      const newPerson = persons.filter((p) => p.id !== person.id);
+      phoneBookService.deletePerson(person.id).then(() => {
+        setPersons(newPerson);
+      });
+    }
+  };
+// step10
+  const updatePerson = (personToUpdate) => {
+    const updatedPerson = { ...personToUpdate, number: newNumber };
+    phoneBookService
+      .update()
+      .then((res) => {
+        setPersons(
+          persons.map((p) => (p.id === personToUpdate.id ? res.data : p))
+        );
+        setNewName("");
+        setNewNumber("");
+        setSuccessAdded(
+          `${personToUpdate.name} is already added to phonebook, replace the old number with a new one?`
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(error.message);
+      });
   };
 
   return (
@@ -65,7 +137,11 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
         {persons.map((person) => (
-          <Persons person={person} key={person.id} />
+          <Persons
+            person={person}
+            key={person.id}
+            deletePerson={deletePerson}
+          />
         ))}
       </ul>
     </div>
