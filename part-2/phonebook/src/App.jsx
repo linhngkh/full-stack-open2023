@@ -118,9 +118,9 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       {successAdded ? (
-        <Notification message={successAdded} />
+        <Notification message={successAdded} successAdded={successAdded} />
       ) : errorMessage ? (
-        <Notification message={errorMessage} />
+        <Notification message={errorMessage} errorMessage={errorMessage} />
       ) : null}
 
       <Filter filterHandle={filterHandle} filterByName={filterByName} />
