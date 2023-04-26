@@ -51,7 +51,7 @@ app.get("/api/persons/:id", (req, res) => {
 
 const generatedId = () => {
   const uniqueId = Math.floor(Math.random() * 100);
-  return uniqueId + 1;
+  return uniqueId;
 };
 
 app.post("/api/persons", (req, res) => {
