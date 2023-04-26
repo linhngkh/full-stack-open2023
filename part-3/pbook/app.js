@@ -27,6 +27,12 @@ const persons = [
 
 app.use(express.json());
 
+app.get("/info", (req, res) => {
+  let d = Date(Date.now());
+  let a = d.toString();
+  res.send(`<div><p>Phonebook has info for 2 people</p><p>${a}</p></div>`);
+});
+
 app.get("/api/persons", (req, res) => {
   res.json(persons);
 });
