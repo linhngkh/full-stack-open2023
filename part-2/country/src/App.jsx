@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import findCountry from "./services/server";
-
+import Country from "./components/Country";
 function App() {
   const [countries, setCountries] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,11 +12,11 @@ function App() {
   }, []);
 
   const handleChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
+    setSearchTerm(e.target.value);
   };
 
   const filterByName = countries.filter((country) =>
-    country.name.common.toLowerCase().includes(searchTerm)
+    country.name.common.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
 
   return (
@@ -24,12 +24,21 @@ function App() {
       <div>
         find country <input value={searchTerm} onChange={handleChange} />
       </div>
-      <p>{filterByName > 10 ? `Too many results` : null}</p>
-      <ul>
-        {filterByName.map((country, id) => (
-          <p key={id}>{country.name.common}</p>
-        ))}
-      </ul>
+      <div>
+        {filterByName.length > 10 ? (
+          <p>Too many matches, specify another filter</p>
+        ) : filterByName.length > 1 && filterByName.length < 10 ? (
+          <ul>
+            {filterByName.map((country, id) => (
+              <p key={id}>{country.name.common}</p>
+            ))}
+          </ul>
+        ) : filterByName.length === 1 ? (
+          <Country country={filterByName} />
+        ) : (
+          <p>There is no data for that country</p>
+        )}
+      </div>
     </>
   );
 }
