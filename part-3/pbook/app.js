@@ -2,7 +2,7 @@ const express = require("express");
 const PORT = 3002;
 const app = express();
 
-const persons = [
+let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -27,6 +27,16 @@ const persons = [
 
 app.use(express.json());
 
+app.get("/info", (req, res) => {
+  let d = Date(Date.now());
+  let a = d.toString();
+  res.send(`<div><p>Phonebook has info for 2 people</p><p>${a}</p></div>`);
+});
+
+app.get("/api/persons", (req, res) => {
+  res.json(persons);
+});
+
 app.get("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id);
   const person = persons.find((person) => person.id === id);
@@ -39,14 +49,41 @@ app.get("/api/persons/:id", (req, res) => {
   }
 });
 
-app.get("/info", (req, res) => {
-  let d = Date(Date.now());
-  let a = d.toString();
-  res.send(`<div><p>Phonebook has info for 2 people</p><p>${a}</p></div>`);
+const generatedId = () => {
+  const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
+  return maxId + 1;
+};
+
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+  if (!body.content) {
+    //   400 Bad Request
+    return res.status(400).json({
+      error: "The name or number is missing.",
+    });
+  }
+  // 409 Conflict
+  else if (body.content) {
+    return res.status(409).json({
+      error: "Name must be unique",
+    });
+  }
+
+  const person = {
+    content: body.content,
+    important: body.important || false,
+    id: generatedId(),
+  };
+
+  persons = persons.concat(person);
+  // 201 Created
+  res.status(201).json({ message: "New entry created successfully" });
 });
 
-app.get("/api/persons", (req, res) => {
-  res.json(persons);
+app.delete("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  persons = persons.filter((person) => person.id !== id);
+  res.status(204).end();
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
