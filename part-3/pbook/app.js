@@ -2,6 +2,7 @@ const express = require("express");
 const PORT = 3002;
 const app = express();
 
+// middleware
 app.use(express.json());
 
 let persons = [
