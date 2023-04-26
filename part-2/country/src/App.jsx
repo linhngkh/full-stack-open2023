@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import findCountry from "./services/server";
+import axios from "axios";
 import Country from "./components/Country";
 function App() {
   const [countries, setCountries] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    findCountry.getAll().then((initialValue) => {
-      setCountries(initialValue);
-    });
+    axios
+      .get("https://restcountries.com/v3.1/all")
+      .then((res) => setCountries(res.data));
   }, []);
 
   const handleChange = (e) => {
