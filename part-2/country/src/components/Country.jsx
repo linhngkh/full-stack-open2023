@@ -29,7 +29,6 @@ const Country = ({ country }) => {
 
       {/* weather */}
       <h3>Weather in {country[0].capital}</h3>
-
       {weather.main && (
         <>
           {" "}
