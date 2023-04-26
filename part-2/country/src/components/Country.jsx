@@ -8,11 +8,11 @@ const Country = ({ country }) => {
       <p>Area {country[0].area}</p>
       <strong>Languages: </strong>
 
-      {/* <ul>
-        {country[0].languages.map((language, id) => (
+      <ul>
+        {Object.values(country[0].languages).map((language, id) => (
           <li key={id}>{language}</li>
         ))}
-      </ul> */}
+      </ul>
       <img alt="flag" src={country[0].flag} width="40" />
     </div>
   );
