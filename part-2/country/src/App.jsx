@@ -19,10 +19,14 @@ function App() {
     country.name.common.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
 
+  const onClickShow = (country) => {
+    setSearchTerm(country.name.common.toLowerCase());
+  };
+
   return (
     <>
       <div>
-        find country <input value={searchTerm} onChange={handleChange} />
+        Find country <input value={searchTerm} onChange={handleChange} />
       </div>
       <div>
         {filterByName.length > 10 ? (
@@ -30,7 +34,10 @@ function App() {
         ) : filterByName.length > 1 && filterByName.length < 10 ? (
           <ul>
             {filterByName.map((country, id) => (
-              <p key={id}>{country.name.common}</p>
+              <p key={id}>
+                {country.name.common} <span></span>
+                <button onClick={() => onClickShow(country)}>show</button>
+              </p>
             ))}
           </ul>
         ) : filterByName.length === 1 ? (
