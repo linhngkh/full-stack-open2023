@@ -4,10 +4,14 @@ const app = express();
 const morgan = require("morgan");
 
 // define a custom token that logs the request body
-morgan.token("req-body", (req, res) => JSON.stringify(req.body));
+morgan.token("post", (req, res) => {
+  return JSON.stringify(req.body);
+});
 
 // use morgan middleware with the 'combined' format
-app.use(morgan("tiny"));
+app.use(
+  morgan(":method :url :status :response-time ms - :res[content-length] :post")
+);
 
 // middleware
 app.use(express.json());
@@ -49,9 +53,9 @@ app.get("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id);
   const person = persons.find((person) => person.id === id);
   if (person) {
-    res.json(person);
+    return res.json(person);
   } else {
-    res.status(404).json({
+    return res.status(404).json({
       error: "The person with that id is not found.",
     });
   }
@@ -82,7 +86,7 @@ app.post("/api/persons", (req, res) => {
   res.send(person);
 
   // 409 Conflict
-  if (body.name) {
+  if (body.name && body.number) {
     return res.status(409).json({
       error: "Name must be unique",
     });
