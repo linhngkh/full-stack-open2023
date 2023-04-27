@@ -1,6 +1,13 @@
 const express = require("express");
 const PORT = 3002;
 const app = express();
+const morgan = require("morgan");
+
+// define a custom token that logs the request body
+morgan.token("req-body", (req, res) => JSON.stringify(req.body));
+
+// use morgan middleware with the 'combined' format
+app.use(morgan("tiny"));
 
 // middleware
 app.use(express.json());
@@ -72,7 +79,7 @@ app.post("/api/persons", (req, res) => {
 
   persons = persons.concat(person);
   // 201 Created
-  res.json(person);
+  res.send(person);
 
   // 409 Conflict
   if (body.name) {
