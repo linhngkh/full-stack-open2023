@@ -1,7 +1,8 @@
 const express = require("express");
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 const app = express();
 const morgan = require("morgan");
+const cors = require("cors");
 
 // define a custom token that logs the request body
 morgan.token("post", (req, res) => {
@@ -15,6 +16,7 @@ app.use(
 
 // middleware
 app.use(express.json());
+app.use(cors());
 
 let persons = [
   {
