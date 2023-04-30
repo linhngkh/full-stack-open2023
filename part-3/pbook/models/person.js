@@ -10,9 +10,10 @@ mongoose
   .connect(url, { useNewUrlParser: true })
   .then((response) => {
     console.log("Connected to mongodb");
+    return response;
   })
   .catch((error) => {
-    console.log("fail to connect to db", error.message);
+    console.log("Fail to connect to db", error.message);
   });
 
 const personSchema = new mongoose.Schema({
