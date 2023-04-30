@@ -97,7 +97,6 @@ const App = () => {
 
   const deletePerson = (personToDelete) => {
     const confirmed = window.confirm(`Delete ${personToDelete.name}`);
-
     if (confirmed) {
       const newPerson = persons.filter((p) => p.id !== personToDelete.id);
       phoneBookService

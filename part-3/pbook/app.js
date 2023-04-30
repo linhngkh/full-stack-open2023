@@ -74,7 +74,7 @@ app.post("/api/persons", (req, res) => {
 });
 
 app.delete("/api/persons/:id", (req, res, next) => {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   Person.findByIdAndRemove(id)
     .then((result) => {
       res.status(204).end();
