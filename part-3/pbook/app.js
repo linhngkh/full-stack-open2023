@@ -1,9 +1,10 @@
+require("dotenv").config();
 const express = require("express");
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT;
 const app = express();
 const morgan = require("morgan");
 const cors = require("cors");
-
+const person = require("./models/person");
 // define a custom token that logs the request body
 morgan.token("post", (req, res) => {
   return JSON.stringify(req.body);
@@ -20,29 +21,6 @@ app.use(cors());
 
 app.use(express.static("dist"));
 
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-
 app.get("/info", (req, res) => {
   let d = Date(Date.now());
   let a = d.toString();
@@ -50,7 +28,9 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-  res.json(persons);
+  Person.find({}).then((response) => {
+    console.log(response.data);
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
