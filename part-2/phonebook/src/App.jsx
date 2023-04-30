@@ -63,7 +63,7 @@ const App = () => {
           }, 3000);
         })
         .catch((error) => {
-          console.log("fail to create new", error);
+          console.log("fail to create new", error.response.data.error);
           setErrorMessage(error.response.data.error);
           setTimeout(() => {
             setErrorMessage(null);
