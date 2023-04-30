@@ -16,6 +16,7 @@ mongoose
 const noteSchema = new mongoose.Schema({
   content: String,
   important: Boolean,
+  date: Date,
 });
 
 noteSchema.plugin(uniqueValidator);
