@@ -12,6 +12,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [successAdded, setSuccessAdded] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [hasError, setHasError] = useState("");
 
   useEffect(() => {
     phoneBookService.getAll().then((initialValues) => {
@@ -58,6 +59,7 @@ const App = () => {
           setNewNumber("");
           //notification
           setSuccessAdded(`Added ${newName}!`);
+          setHasError(false);
           setTimeout(() => {
             setSuccessAdded(null);
           }, 3000);
@@ -65,6 +67,7 @@ const App = () => {
         .catch((error) => {
           console.log("fail to create new", error.response.data.error);
           setErrorMessage(error.response.data.error);
+          setHasError(true);
           setTimeout(() => {
             setErrorMessage(null);
           }, 3000);
@@ -83,9 +86,11 @@ const App = () => {
               persons.map((p) => (p.id !== changePerson.id ? p : changePerson))
             );
             setSuccessAdded(`Update ${changePerson.name} successfully`);
+            setHasError(false);
           })
           .catch((error) => {
             console.log("fail to update", error);
+            setHasError(true);
           });
         setTimeout(() => {
           setErrorMessage(null);
@@ -104,6 +109,7 @@ const App = () => {
         .then(() => {
           setPersons(newPerson);
           setSuccessAdded(`Deleted ${personToDelete.name}`);
+          setHasError(false);
         })
         .catch((error) => {
           console.log("Fail to delete ", error);
@@ -118,9 +124,9 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       {successAdded ? (
-        <Notification message={successAdded} />
+        <Notification message={successAdded} hasError={hasError} />
       ) : errorMessage ? (
-        <Notification message={errorMessage} />
+        <Notification message={errorMessage} hasError={hasError} />
       ) : null}
 
       <Filter filterHandle={filterHandle} filterByName={filterByName} />

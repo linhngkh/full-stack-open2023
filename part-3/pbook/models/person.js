@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
+const phoneRegExp = /^(\d{2,3})-(\d+)$/;
 
 mongoose.set("strictQuery", false);
 
@@ -23,8 +24,14 @@ const personSchema = new mongoose.Schema({
   },
   number: {
     type: String,
-    minlength: 5,
-    required: true,
+    minlength: 8,
+    validate: {
+      validator: function (v) {
+        return phoneRegExp.test(v);
+      },
+      message: (props) => `${props.value} is not a valid phone number`,
+    },
+    required: [true, "user phone number required"],
     unique: true,
   },
 });
