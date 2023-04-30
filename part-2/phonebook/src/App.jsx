@@ -97,8 +97,9 @@ const App = () => {
 
   const deletePerson = (personToDelete) => {
     const confirmed = window.confirm(`Delete ${personToDelete.name}`);
-    const newPerson = persons.filter((p) => p.id !== personToDelete.id);
+
     if (confirmed) {
+      const newPerson = persons.filter((p) => p.id !== personToDelete.id);
       phoneBookService
         .deletePerson(personToDelete.id)
         .then(() => {
@@ -106,7 +107,7 @@ const App = () => {
           setSuccessAdded(`Deleted ${personToDelete.name}`);
         })
         .catch((error) => {
-          console.log("fail to delete ", error);
+          console.log("Fail to delete ", error);
           setErrorMessage(
             `Information of ${personToDelete.name} has already been removed from server`
           );
