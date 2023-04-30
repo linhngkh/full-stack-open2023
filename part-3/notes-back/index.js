@@ -23,24 +23,6 @@ const unknownEndpoint = (request, response) => {
 app.use(express.json());
 app.use(requestLogger);
 
-let notes = [
-  {
-    id: 1,
-    content: "HTML is easy",
-    important: true,
-  },
-  {
-    id: 2,
-    content: "Browser can execute only JavaScript",
-    important: false,
-  },
-  {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true,
-  },
-];
-
 app.get("/", (req, res) => {
   res.send("<h1>Hello World!</h1>");
 });
@@ -70,7 +52,7 @@ const generatedId = () => {
 app.post("/api/notes", (req, res) => {
   const body = req.body;
 
-  if (!body.content === undefined) {
+  if (body.content === undefined) {
     return res.status(400).json({
       error: "content missing",
     });
@@ -78,6 +60,7 @@ app.post("/api/notes", (req, res) => {
   const note = new Note({
     content: body.content,
     important: body.important || false,
+    id: generatedId(),
   });
 
   note.save().then((savedNote) => {

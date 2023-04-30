@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
+const uniqueValidator = require("mongoose-unique-validator");
+
+mongoose.set("strictQuery", false);
 
 const url = process.env.MONGODB_URI;
 
-mongoose.set("strictQuery", false);
 mongoose
   .connect(url, { useNewUrlParser: true })
   .then((response) => {
@@ -13,11 +15,11 @@ mongoose
   });
 
 const phoneSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: { type: String, required: true, unique: true },
+  number: { type: String, required: true, unique: true },
 });
 
-const Person = mongoose.model("Person", phoneSchema);
+phoneSchema.plugin(uniqueValidator);
 
 phoneSchema.set("toJSON", {
   transform: (document, returnedObject) => {
