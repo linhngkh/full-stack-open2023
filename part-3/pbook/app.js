@@ -42,7 +42,7 @@ app.get("/info", (req, res) => {
     `<div><p>Phonebook has info for ${Person.length} people</p><p>${a}</p></div>`
   );
 });
-
+// get
 app.get("/api/persons/:id", (req, res, next) => {
   const id = req.params.id;
   Person.findById(id)
