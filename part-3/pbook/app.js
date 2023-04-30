@@ -1,11 +1,12 @@
 require("dotenv").config();
 const express = require("express");
+const bodyParser = require("body-parser");
 const PORT = process.env.PORT;
 const app = express();
 const morgan = require("morgan");
 const cors = require("cors");
 const Person = require("./models/person");
-
+const errorHandler = require("./middleware/errorHandler");
 // define a custom token that logs the request body
 morgan.token("post", (req, res) => {
   return JSON.stringify(req.body);
@@ -18,15 +19,14 @@ app.use(
 
 // middleware
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(cors());
-
 app.use(express.static("dist"));
 
 app.get("/", (req, res) => {
-  res.send("hello");
-  if (res.headersSent !== true) {
-    res.send("Hello World!");
-  }
+  Person.find({}).then((person) => {
+    res.json(person);
+  });
 });
 
 app.get("/api/persons", (req, res) => {
@@ -43,13 +43,16 @@ app.get("/info", (req, res) => {
   );
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   const id = Number(req.params.id);
   Person.findById(id)
     .then((person) => {
       person ? res.json(person.toJSON()) : res.status(404).end();
     })
-    .catch((error) => console.error("There are some error here", error));
+    .catch((error) => {
+      console.log(error);
+      next(error);
+    });
 });
 
 app.post("/api/persons", (req, res) => {
@@ -70,27 +73,31 @@ app.post("/api/persons", (req, res) => {
     .catch((error) => error.message);
 });
 
-app.delete("/api/persons/:id", (req, res) => {
+app.delete("/api/persons/:id", (req, res, next) => {
   const id = Number(req.params.id);
-  Person.findByIdAndDelete(id)
+  Person.findByIdAndRemove(id)
     .then((result) => {
       res.status(204).end();
     })
-    .catch((error) => error.message);
+    .catch((error) => next(error));
 });
 
-app.put("/:id", (req, res) => {
+app.put("/api/persons/:id", (req, res) => {
   const id = req.params.id;
   const body = req.body;
+
   const person = {
     name: body.name,
     number: body.number,
   };
+
   Person.findByIdAndUpdate(id, person, { new: true })
     .then((updatedPerson) => {
       res.json(updatedPerson.toJSON());
     })
-    .catch((error) => error.message);
+    .catch((error) => next(error));
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

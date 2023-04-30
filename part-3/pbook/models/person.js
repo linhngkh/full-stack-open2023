@@ -14,19 +14,19 @@ mongoose
     console.log("fail to connect to db", error.message);
   });
 
-const phoneSchema = new mongoose.Schema({
+const personSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   number: { type: String, required: true, unique: true },
 });
 
-phoneSchema.plugin(uniqueValidator);
+personSchema.plugin(uniqueValidator);
 
-phoneSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
+personSchema.set("toJSON", {
+  transform: (doc, obj) => {
+    obj.id = obj._id.toString();
+    delete obj._id;
+    delete obj.__v;
   },
 });
 
-module.exports = mongoose.model("Person", phoneSchema);
+module.exports = mongoose.model("Person", personSchema);
