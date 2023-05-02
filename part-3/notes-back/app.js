@@ -4,7 +4,7 @@ const cors = require("cors");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 const notesRouter = require("./controllers/note");
-const { config } = require("dotenv");
+const mongoose = require("mongoose");
 
 mongoose.set("strictPopulate", false);
 
