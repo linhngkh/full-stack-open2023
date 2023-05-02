@@ -1,10 +1,10 @@
-require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const PORT = process.env.PORT;
+const config = require("./utils/config");
 const Note = require("./models/note");
-const errorHandler = require("./middleware/errorHandler");
+const errorHandler = require("./utils/middleware");
+const logger = require("./utils/logger");
 
 const requestLogger = (request, response, next) => {
   console.log("Method:", request.method);
@@ -96,4 +96,6 @@ app.use(unknownEndpoint);
 // handler of requests with result to errors
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(config.PORT, () =>
+  logger.info(`Server running on port ${config.PORT}`)
+);
