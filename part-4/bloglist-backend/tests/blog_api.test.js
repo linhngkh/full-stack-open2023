@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
+const api = supertest(app);
 
 const helper = require("../tests/test_helper");
-
-const api = supertest(app);
 
 test("bloglists are returned as json", async () => {
   await api
@@ -43,7 +42,7 @@ describe("Making POST request", () => {
     const postNewBlog = await helper.blogInDb();
     expect(postNewBlog.length).toBe(helper.initialBlogs.length + 1);
 
-    const contents = postNewBlog.find(equalTo(newBlog));
+    const contents = postNewBlog.find(helper.equalToSchema(newBlog));
     expect(contents).toContain("async/await simplifies making async calls");
   });
 });

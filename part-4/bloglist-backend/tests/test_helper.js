@@ -20,8 +20,11 @@ const blogInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
+const equalToSchema = (blog) => (b) =>
+  b.author === blog.author && b.title === blog.title && b.url === blog.url;
+
 module.exports = {
   initialBlogs,
-  nonExistingId,
   blogInDb,
+  equalToSchema,
 };
