@@ -5,7 +5,7 @@ const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 const notesRouter = require("./controllers/note");
 const mongoose = require("mongoose");
-
+const config = require("./utils/config");
 mongoose.set("strictPopulate", false);
 
 logger.info("Connecting to", config.MONGODB_URI);
