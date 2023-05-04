@@ -31,15 +31,18 @@ const mostBlogs = (blogs) => {
 };
 
 const mostLikes = (blogs) => {
-  const likesCount = _.countBy(blogs, "author");
-  const authorName = _.maxBy(
-    _.keys(likesCount),
-    (author) => likesCount[author]
+  const likesCount = _.groupBy(blogs, "author");
+  const authorsTotal = _.mapValues(likesCount, (posts) =>
+    _.sumBy(posts, "likes")
   );
-  const mostLikesCount = likesCount[authorName];
+  const authorName = _.maxBy(
+    _.keys(authorsTotal),
+    (author) => authorsTotal[author]
+  );
+  const mostLikesCount = authorsTotal[authorName];
   return {
     author: authorName,
-    blogs: mostLikesCount,
+    likes: mostLikesCount,
   };
 };
 
