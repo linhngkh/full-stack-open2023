@@ -4,9 +4,9 @@ const app = require("../app");
 
 const api = supertest(app);
 
-test("notes are returned as json", async () => {
+test("bloglists are returned as json", async () => {
   await api
-    .get("/api/notes")
+    .get("/api/blogs")
     .expect(200)
     .expect("Content-Type", /application\/json/);
 });
