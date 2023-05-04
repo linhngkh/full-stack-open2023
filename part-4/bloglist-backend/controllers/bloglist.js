@@ -19,7 +19,7 @@ blogRoute.get("/:id", async (req, res) => {
   if (blog) {
     res.status(200).json(blog);
   } else {
-    res.status(404).end();
+    res.status(404).end()
   }
 });
 
