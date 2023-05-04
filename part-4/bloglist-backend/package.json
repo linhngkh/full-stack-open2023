@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
     "test": "jest --verbose"
   },
   "author": "linh ng",
@@ -22,6 +23,7 @@
     "testEnvironment": "node"
   },
   "devDependencies": {
-    "jest-cli": "^29.5.0"
+    "jest-cli": "^29.5.0",
+    "supertest": "^6.3.3"
   }
 }
