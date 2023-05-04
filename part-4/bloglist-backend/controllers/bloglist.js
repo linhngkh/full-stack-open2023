@@ -14,4 +14,19 @@ blogRoute.post("/", (req, res) => {
   });
 });
 
+blogRoute.get("/:id", async (req, res) => {
+  const blog = await Blog.findById(req.params.id);
+  if (blog) {
+    res.status(200).json(blog);
+  } else {
+    res.status(404).end();
+  }
+});
+
+blogRoute.delete("/:id", (req, res) => {
+  Blog.findByIdAndRemove(req.params.id).then((deletedBlog) =>
+    res.status(204).end()
+  );
+});
+
 module.exports = blogRoute;
