@@ -110,3 +110,6 @@ describe("POST /api/blogs", () => {
     expect(postNewBlog.length).toBe(helper.initialBlogs.length);
   });
 });
+afterAll(async () => {
+  await mongoose.connection.close();
+});
