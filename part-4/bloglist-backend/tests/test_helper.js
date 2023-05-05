@@ -7,17 +7,16 @@ const initialBlogs = [
     url: "https://reactpatterns.com/",
     likes: 7,
   },
-  {
-    title: "Go To Statement Considered Harmful",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-    likes: 5,
-  },
 ];
 
 const blogInDb = async () => {
   const blogs = await Blog.find({});
   return blogs.map((blog) => blog.toJSON());
+};
+
+const blogWithId = async () => {
+  const blogId = await Blog.findById(req.params.id);
+  return blogId;
 };
 
 const equalToSchema = (blog) => (b) =>
@@ -27,4 +26,5 @@ module.exports = {
   initialBlogs,
   blogInDb,
   equalToSchema,
+  blogWithId,
 };

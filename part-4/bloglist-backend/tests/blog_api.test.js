@@ -25,7 +25,7 @@ test("the unique identifier property of the blog posts is named id", async () =>
 
 // 4.10: Blog list tests, step3
 
-describe("Making POST request", () => {
+describe("Making POST request and content of the blog post is saved correctly to the database", () => {
   test("verifies that making an HTTP POST", async () => {
     const newBlog = {
       author: "Martin Fowler",
@@ -46,5 +46,67 @@ describe("Making POST request", () => {
     const contents = postNewBlog.find(helper.equalToSchema(newBlog));
 
     expect(contents).toBeDefined();
+    //  verify that the content of the blog post is saved correctly to the database.
+    const savedPost = await helper.blogWithId();
+    expect(savedPost.body).toMatchObject(newBlog);
+  });
+});
+
+// 4.11*: Blog list tests, step4
+describe("the likes property is missing from the request, it will default to the value 0", () => {
+  test("likes property", async () => {
+    const newBlog = {
+      author: "Martin Fowler",
+      title: "Microservices Resource Guide",
+      url: "https://martinfowler.com/microservices/",
+    };
+
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    const postNewBlog = await helper.blogInDb();
+
+    const contents = postNewBlog.find(helper.equalToSchema(newBlog));
+
+    expect(contents.likes).toBe(0);
+  });
+});
+
+// 4.12*: Blog list tests, step5
+describe("POST /api/blogs", () => {
+  test("should return 400 bad request if title is missing", async () => {
+    const newBlog = {
+      author: "Martin Fowler",
+      url: "https://martinfowler.com/microservices/",
+      likes: 3,
+    };
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    const postNewBlog = await helper.blogInDb();
+
+    expect(postNewBlog.length).toBe(helper.initialBlogs.length);
+  });
+  test("should return 400 bad request if url is missing", async () => {
+    const newBlog = {
+      author: "Martin Fowler",
+      title: "Microservices Resource Guide",
+      likes: 3,
+    };
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    const postNewBlog = await helper.blogInDb();
+
+    expect(postNewBlog.length).toBe(helper.initialBlogs.length);
   });
 });

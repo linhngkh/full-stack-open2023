@@ -17,9 +17,9 @@ blogRoute.post("/", (req, res) => {
 blogRoute.get("/:id", async (req, res) => {
   const blog = await Blog.findById(req.params.id);
   if (blog) {
-    res.status(200).json(blog);
+    res.status(201).json(blog);
   } else {
-    res.status(404).end()
+    res.status(400).end();
   }
 });
 
