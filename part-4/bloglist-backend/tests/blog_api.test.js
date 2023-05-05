@@ -28,10 +28,10 @@ test("the unique identifier property of the blog posts is named id", async () =>
 describe("Making POST request", () => {
   test("verifies that making an HTTP POST", async () => {
     const newBlog = {
-      title: "Stoic",
-      author: "Stoic",
-      url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-      likes: 10,
+      author: "Martin Fowler",
+      title: "Microservices Resource Guide",
+      url: "https://martinfowler.com/microservices/",
+      likes: 3,
     };
     await api
       .post("/api/blogs")
@@ -40,9 +40,11 @@ describe("Making POST request", () => {
       .expect("Content-Type", /application\/json/);
 
     const postNewBlog = await helper.blogInDb();
+
     expect(postNewBlog.length).toBe(helper.initialBlogs.length + 1);
 
     const contents = postNewBlog.find(helper.equalToSchema(newBlog));
-    expect(contents).toContain("async/await simplifies making async calls");
+
+    expect(contents).toBeDefined();
   });
 });
