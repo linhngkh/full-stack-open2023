@@ -8,6 +8,7 @@ const notesRouter = require("./controllers/note");
 const usersRouter = require("./controllers/user");
 const mongoose = require("mongoose");
 const config = require("./utils/config");
+const loginRouter = require("./controllers/login");
 
 mongoose.set("strictPopulate", false);
 
@@ -27,6 +28,8 @@ app.use(cors());
 app.use(express.static("dist"));
 app.use(express.json());
 app.use(middleware.requestLogger);
+
+app.use("/api/login", loginRouter)
 
 app.use("/api/notes", notesRouter);
 
