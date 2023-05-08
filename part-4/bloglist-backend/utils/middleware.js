@@ -15,6 +15,10 @@ const unknownEndpoint = (req, res) => {
 const tokenExtractor = (req, res, next) => {
   // code that extracts the token
   const token = req.headers.authorization;
+  // Check if the token is provided
+  if (!token) {
+    return res.status(401).json({ error: "JWT must be provided" });
+  }
   // Attach the extracted token to the request object for future use
   request.token = token;
   next();
