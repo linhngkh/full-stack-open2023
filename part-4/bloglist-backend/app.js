@@ -8,6 +8,7 @@ const logger = require("./utils/logger");
 const config = require("./utils/config");
 const blogRoute = require("./controllers/bloglist");
 const bodyParser = require("body-parser");
+const userRouter = require("./controllers/users");
 
 logger.info("Connecting to", config.MONGODB_URI);
 
@@ -22,6 +23,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
+app.use("/api/users", userRouter);
 
 app.use("/api/blogs", blogRoute);
 

@@ -1,5 +1,5 @@
 const Blog = require("../model/bloglist");
-
+const User = require("../model/users");
 const initialBlogs = [
   {
     title: "React patterns",
@@ -22,9 +22,15 @@ const blogWithId = async () => {
 const equalToSchema = (blog) => (b) =>
   b.author === blog.author && b.title === blog.title && b.url === blog.url;
 
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((u) => u.toJSON());
+};
+
 module.exports = {
   initialBlogs,
   blogInDb,
   equalToSchema,
   blogWithId,
+  usersInDb,
 };
