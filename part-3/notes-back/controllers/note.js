@@ -16,7 +16,7 @@ notesRouter.get("/", async (req, res) => {
   res.json(notes);
 });
 
-notesRouter.get("/:id", async (req, res, next) => {
+notesRouter.get("/:id", async (req, res) => {
   const note = await Note.findById(req.params.id);
   if (note) {
     res.json(note);
@@ -25,11 +25,11 @@ notesRouter.get("/:id", async (req, res, next) => {
   }
 });
 
-notesRouter.post("/", async (req, res, next) => {
+notesRouter.post("/", async (req, res) => {
   const body = req.body;
 
   const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
-  
+
   if (!decodedToken.id) {
     return res.status(401).json({ error: "token invalid" });
   }
@@ -39,7 +39,7 @@ notesRouter.post("/", async (req, res, next) => {
   const note = new Note({
     content: body.content,
     important: body.important === undefined ? false : body.important,
-    user: user.id,
+    user: user._id,
   });
 
   const savedNote = await note.save();
@@ -48,13 +48,14 @@ notesRouter.post("/", async (req, res, next) => {
   res.status(201).json(savedNote);
 });
 
-notesRouter.delete("/:id", async (req, res, next) => {
+notesRouter.delete("/:id", async (req, res) => {
   await Note.findByIdAndRemove(req.params.id);
   res.status(204).end();
 });
 
 notesRouter.put("/:id", async (req, res, next) => {
   const body = req.body;
+  
   const note = {
     content: body.content,
     important: body.important,
