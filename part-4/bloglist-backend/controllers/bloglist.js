@@ -15,8 +15,8 @@ blogRoute.get("/", async (req, res, next) => {
   }
 });
 
-const getTokenFrom = (request) => {
-  const authorization = request.get("authorization");
+const getTokenFrom = (req) => {
+  const authorization = req.get("authorization");
   if (authorization && authorization.startsWith("Bearer ")) {
     return authorization.replace("Bearer ", "");
   }
@@ -26,14 +26,10 @@ const getTokenFrom = (request) => {
 blogRoute.post("/", async (req, res, next) => {
   try {
     const body = req.body;
-    const token = getTokenFrom(req);
-
-    const decodedToken = jwt.verify(req.token, process.env.SECRET);
-
-    if (!token || !decodedToken.id) {
-      return res.status(401).json({ error: "token missing or invalid" });
+    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: "Invalid or missing token" });
     }
-
     const user = await User.findById(decodedToken.id);
 
     const blog = new Blog({
@@ -65,10 +61,21 @@ blogRoute.get("/:id", async (req, res) => {
 
 blogRoute.delete("/:id", async (req, res, next) => {
   try {
-    const blog = await Blog.findByIdAndRemove(req.params.id);
-    if (blog) {
-      res.status(204).end();
+    const body = req.body;
+    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: "Invalid or missing token" });
     }
+
+    const blog = await Blog.findById(req.params.id);
+    if (!blog.user.toString() === userid.toString()) {
+      return response
+        .status(403)
+        .json({ error: "You are not authorized to delete this blog" });
+    }
+
+    await Blog.findByIdAndDelete(id);
   } catch (error) {
     next(error);
   }
