@@ -36,5 +36,5 @@ app.use("/api/blogs", blogRoute);
 
 app.use(middleware.errorHandler);
 app.use(middleware.unknownEndpoint);
-
+app.use(middleware.tokenExtractor);
 module.exports = app;

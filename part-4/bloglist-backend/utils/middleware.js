@@ -12,6 +12,14 @@ const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: "unknown endpoint" });
 };
 
+const tokenExtractor = (req, res, next) => {
+  // code that extracts the token
+  const token = req.headers.authorization;
+  // Attach the extracted token to the request object for future use
+  request.token = token;
+  next();
+};
+
 const errorHandler = (error, req, res, next) => {
   logger.error(error.message);
 
@@ -20,7 +28,7 @@ const errorHandler = (error, req, res, next) => {
   } else if (error.name === "ValidationError") {
     return res.status(400).json({ error: error.message });
   } else if (error.name === "JsonWebTokenError") {
-    return res.status(400).json({ error: "Invalide Token" });
+    return res.status(400).json({ error: "Invalid Token" });
   } else if (error.name === "TokenExpiredError") {
     return res.status(401).json({
       error: "Token expired",
@@ -34,4 +42,5 @@ module.exports = {
   errorHandler,
   unknownEndpoint,
   requestLogger,
+  tokenExtractor,
 };

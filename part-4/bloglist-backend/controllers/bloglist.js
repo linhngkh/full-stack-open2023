@@ -15,19 +15,20 @@ blogRoute.get("/", async (req, res, next) => {
   }
 });
 
+const getTokenFrom = (request) => {
+  const authorization = request.get("authorization");
+  if (authorization && authorization.startsWith("Bearer ")) {
+    return authorization.replace("Bearer ", "");
+  }
+  return null;
+};
+
 blogRoute.post("/", async (req, res, next) => {
-  const getTokenFrom = (req) => {
-    const authorization = req.get("authorization");
-    if (authorization && authorization.toLowerCase().startsWith("bearer")) {
-      return authorization.substring(7);
-    }
-    return null;
-  };
   try {
     const body = req.body;
     const token = getTokenFrom(req);
 
-    const decodedToken = jwt.sign(token, process.env.SECRET);
+    const decodedToken = jwt.verify(token, process.env.SECRET);
 
     if (!token || !decodedToken.id) {
       return res.status(401).json({ error: "token missing or invalid" });
