@@ -8,7 +8,7 @@ userRouter.get("/", async (req, res) => {
     author: 2,
     url: 2,
   });
-  res.json(users.map((u) => u.toJON()));
+  res.json(users.map((u) => u.toJSON()));
 });
 
 userRouter.post("/", async (req, res, next) => {
@@ -18,23 +18,29 @@ userRouter.post("/", async (req, res, next) => {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    if (!body.username || !body.password) {
+    if (!username || !password) {
       return res
         .status(400)
-        .json({ error: "Useranme or password are missing" });
-    } else if (body.username.length < 3 || body.password.length < 3) {
+        .json({ error: "username or password are missing" });
+    } else if (username.length < 3 || password.length < 3) {
       return res.status(400).json({ error: "username or password too short" });
     } else {
       const user = new User({
-        username,
-        name,
+        username: username,
+        name: name,
         passwordHash,
       });
     }
 
-    const savedUser = await user.save();
+    const users = await User.find({});
+    const uniqueUsername = users.filter((u) => u.username === user.username);
 
-    res.status(201).json(savedUser);
+    if (uniqueUsername.length === 0) {
+      const savedUser = await user.save();
+      res.status(201).json(savedUser);
+    } else {
+      res.status(400).json({ error: "username needed to be unique" });
+    }
   } catch (error) {
     next(error);
   }

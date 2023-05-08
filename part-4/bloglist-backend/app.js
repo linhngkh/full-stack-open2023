@@ -19,6 +19,8 @@ mongoose
   })
   .catch((error) => logger.error("Error connecting to mongodb", error.message));
 
+mongoose.set("strictPopulate", false);
+
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
