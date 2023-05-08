@@ -5,8 +5,10 @@ const cors = require("cors");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 const notesRouter = require("./controllers/note");
+const usersRouter = require("./controllers/user");
 const mongoose = require("mongoose");
 const config = require("./utils/config");
+
 mongoose.set("strictPopulate", false);
 
 logger.info("Connecting to", config.MONGODB_URI);
@@ -27,6 +29,8 @@ app.use(express.json());
 app.use(middleware.requestLogger);
 
 app.use("/api/notes", notesRouter);
+
+app.use("/api/users", usersRouter);
 
 app.use(middleware.unknownEndpoint);
 // handler of requests with result to errors

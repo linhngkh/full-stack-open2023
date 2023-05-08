@@ -32,13 +32,13 @@ notesRouter.delete("/:id", async (req, res, next) => {
   res.status(204).end();
 });
 
-notesRouter.put("/:id", (req, res, next) => {
+notesRouter.put("/:id", async (req, res, next) => {
   const body = req.body;
   const note = {
     content: body.content,
     important: body.important,
   };
-  Note.findByIdAndUpdate(req.params.id, note, { new: true })
+  await Note.findByIdAndUpdate(req.params.id, note, { new: true })
     .then((updatedNote) => {
       res.json(updatedNote);
     })

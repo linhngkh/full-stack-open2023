@@ -1,4 +1,5 @@
 const Blog = require("../model/bloglist");
+const { error } = require("../utils/logger");
 const blogRoute = require("express").Router();
 
 blogRoute.get("/", (req, res) => {
@@ -7,11 +8,22 @@ blogRoute.get("/", (req, res) => {
   });
 });
 
-blogRoute.post("/", (req, res) => {
-  const blog = new Blog(req.body);
-  blog.save().then((result) => {
-    res.status(201).json(result);
-  });
+blogRoute.post("/", async (req, res, next) => {
+  try {
+    const body = req.body;
+
+    const blog = new Blog({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+    });
+
+    const savedBlog = await blog.save();
+    res.status(201).json(savedBlog);
+  } catch (error) {
+    next(error);
+  }
 });
 
 blogRoute.get("/:id", async (req, res) => {
@@ -23,10 +35,36 @@ blogRoute.get("/:id", async (req, res) => {
   }
 });
 
-blogRoute.delete("/:id", (req, res) => {
-  Blog.findByIdAndRemove(req.params.id).then((deletedBlog) =>
-    res.status(204).end()
-  );
+blogRoute.delete("/:id", async (req, res, next) => {
+  try {
+    const blog = await Blog.findByIdAndRemove(req.params.id);
+    if (blog) {
+      res.status(204).end();
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogRoute.put("/:id", async (req, res, next) => {
+  try {
+    const body = req.body;
+    const blog = {
+      title: body.title,
+      author: body.author,
+      url: body.url,
+    };
+    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, {
+      new: true,
+    });
+    if (updatedBlog) {
+      updatedBlog.save().then((result) => {
+        res.status(200).json(result);
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = blogRoute;
