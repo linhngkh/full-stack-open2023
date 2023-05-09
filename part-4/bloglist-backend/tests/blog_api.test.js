@@ -62,9 +62,9 @@ describe("Making POST request and content of the blog post is saved correctly to
 describe("it will default to the value 0", () => {
   test("if the likes property is missing from the request", async () => {
     const newBlog = {
-      author: "Martin Fowler",
-      title: "Microservices Resource Guide",
-      url: "https://martinfowler.com/microservices/",
+      title: "Type wars",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
     };
 
     await api
@@ -82,16 +82,39 @@ describe("it will default to the value 0", () => {
 
 // 4.12*: Blog list tests, step5
 describe("POST /api/blogs", () => {
-  test("should return 400 bad request if title and url are missing", async () => {
+  test("should return 400 bad request if title is missing", async () => {
     const newBlog = {
-      author: "Martin Fowler",
-      likes: 3,
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+      likes: 2,
     };
-    await api.post("/api/blogs").send(newBlog).expect(400);
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
 
     const postNewBlog = await helper.blogInDb();
 
-    expect(postNewBlog.length).toBe(helper.initialBlogs.length);
+    expect(postNewBlog.length).toEqual(helper.initialBlogs.length);
+  });
+
+  test("should return 400 bad request if url is missing", async () => {
+    const newBlog = {
+      title: "Type wars",
+      author: "Robert C. Martin",
+
+      likes: 2,
+    };
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    const postNewBlog = await helper.blogInDb();
+
+    expect(postNewBlog.length).toEqual(helper.initialBlogs.length);
   });
 });
 

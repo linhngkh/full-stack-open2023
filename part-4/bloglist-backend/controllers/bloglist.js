@@ -2,6 +2,7 @@ const Blog = require("../model/bloglist");
 const blogRoute = require("express").Router();
 const User = require("./users");
 const jwt = require("jsonwebtoken");
+const helper = require("../utils/middleware");
 // Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW
 blogRoute.get("/", async (req, res, next) => {
   try {
@@ -23,7 +24,7 @@ const getTokenFrom = (req) => {
   return null;
 };
 
-blogRoute.post("/", async (req, res, next) => {
+blogRoute.post("/", helper.tokenExtractor, async (req, res, next) => {
   try {
     const body = req.body;
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
@@ -76,6 +77,7 @@ blogRoute.delete("/:id", async (req, res, next) => {
     }
 
     await Blog.findByIdAndDelete(id);
+    res.status(204).end();
   } catch (error) {
     next(error);
   }

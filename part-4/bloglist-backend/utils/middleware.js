@@ -17,7 +17,7 @@ const tokenExtractor = (req, res, next) => {
   const token = req.headers.authorization;
   // Check if the token is provided
   if (!token) {
-    return res.status(401).json({ error: "JWT must be provided" });
+    return res.status(401).json({ error: "Unauthorized" });
   }
   // Attach the extracted token to the request object for future use
   request.token = token;
