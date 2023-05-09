@@ -34,7 +34,7 @@ userRouter.post("/", async (req, res, next) => {
       const users = await User.find({});
       const uniqueUsername = users.filter((u) => u.username === user.username);
 
-      if (uniqueUsername.length === 0) {
+      if (!uniqueUsername.length === 0) {
         const savedUser = await user.save();
         res.json(savedUser);
       } else {

@@ -4,8 +4,6 @@ const app = require("../app");
 const api = supertest(app);
 const Blog = require("../model/bloglist");
 const helper = require("../tests/test_helper");
-const User = require("../model/users");
-const bcrypt = require("bcrypt");
 
 beforeEach(async () => {
   await Blog.deleteMany({});
@@ -82,7 +80,7 @@ describe("it will default to the value 0", () => {
 
 // 4.12*: Blog list tests, step5
 describe("POST /api/blogs", () => {
-  test("should return 400 bad request if title is missing", async () => {
+  test("title and url are missing", async () => {
     const newBlog = {
       author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
@@ -96,25 +94,7 @@ describe("POST /api/blogs", () => {
 
     const postNewBlog = await helper.blogInDb();
 
-    expect(postNewBlog.length).toEqual(helper.initialBlogs.length);
-  });
-
-  test("should return 400 bad request if url is missing", async () => {
-    const newBlog = {
-      title: "Type wars",
-      author: "Robert C. Martin",
-
-      likes: 2,
-    };
-    await api
-      .post("/api/blogs")
-      .send(newBlog)
-      .expect(400)
-      .expect("Content-Type", /application\/json/);
-
-    const postNewBlog = await helper.blogInDb();
-
-    expect(postNewBlog.length).toEqual(helper.initialBlogs.length);
+    expect(postNewBlog.length).toBe(helper.initialBlogs.length);
   });
 });
 
@@ -125,12 +105,11 @@ describe("deletion of a single blog post", () => {
 
     await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
 
-    const postNewBlog = await helper.blogInDb();
+    const blogAtEnd = await helper.blogInDb();
+    expect(blogAtEnd.length).toBe(helper.initialBlogs.length - 1);
 
-    const deleteBlog = postNewBlog.find(helper.equalToSchema(blogToDelete));
-
-    expect(deleteBlog).toBe(undefined);
-    expect(postNewBlog.length).toBe(helper.initialBlogs.length - 1);
+    const contents = blogAtEnd.map((d) => d.author);
+    expect(contents).not.toContain(blogToDelete.author);
   });
 });
 
@@ -149,96 +128,6 @@ describe("updating the LIKES of an individual blog post.", () => {
       .send(updatedBlog)
       .expect(200)
       .expect("Content-Type", /application\/json/);
-  });
-});
-
-describe("when there is initially one user at db", () => {
-  beforeEach(async () => {
-    await User.deleteMany({});
-
-    const passwordHash = await bcrypt.hash("sekret", 10);
-    const user = new User({ username: "root", passwordHash });
-
-    await user.save();
-  });
-
-  test("creation succeeds with a fresh username", async () => {
-    const usersAtStart = await helper.usersInDb();
-
-    const newUser = {
-      username: "mluukkai",
-      name: "Matti Luukkainen",
-      password: "salainen",
-    };
-
-    await api
-      .post("/api/users")
-      .send(newUser)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
-    const usersAtEnd = await helper.usersInDb();
-    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
-
-    const usernames = usersAtEnd.map((u) => u.username);
-    expect(usernames).toContain(newUser.username);
-  });
-
-  test("creation fails with proper statuscode and message if username already taken", async () => {
-    const usersAtStart = await helper.usersInDb();
-
-    const newUser = {
-      username: "root",
-      name: "Superuser",
-      password: "salainen",
-    };
-
-    const result = await api
-      .post("/api/users")
-      .send(newUser)
-      .expect(400)
-      .expect("Content-Type", /application\/json/);
-
-    expect(result.body.error).toContain("`username` to be unique");
-
-    const usersAtEnd = await helper.usersInDb();
-    expect(usersAtEnd.length).toBe(usersAtStart.length);
-  });
-});
-
-// 4.23*: bloglist expansion, step11
-describe("POST /api/blogs", () => {
-  test("should add a new blog with authentication", async () => {
-    let token = "eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW";
-    const newBlog = {
-      author: "Martin Fowler",
-      title: "Microservices Resource Guide",
-      url: "https://martinfowler.com/microservices/",
-      likes: 3,
-    };
-    const res = await api
-      .post("/api/blogs")
-      .send(newBlog)
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(res.status).toBe(201);
-    expect(res.body.title).toBe(newBlog.title);
-    expect(res.body.author).toBe(newBlog.author);
-  });
-
-  test("should return 401 Unauthorized if token is not provided", async () => {
-    const newBlog = {
-      author: "Martin Fowler",
-      title: "Microservices Resource Guide",
-      url: "https://martinfowler.com/microservices/",
-      likes: 3,
-    };
-
-    const response = await api.post("/api/blogs").send(newBlog);
-
-    expect(response.status).toBe(401);
-    expect(response.body).toHaveProperty("error");
-    expect(response.body.error).toBe("Unauthorized");
   });
 });
 

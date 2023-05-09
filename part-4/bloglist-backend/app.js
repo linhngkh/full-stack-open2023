@@ -30,8 +30,8 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(middleware.requestLogger);
 
-app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
+app.use("/api/users", userRouter);
 app.use("/api/blogs", blogRoute);
 
 app.use(middleware.errorHandler);
