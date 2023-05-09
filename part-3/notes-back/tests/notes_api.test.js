@@ -5,12 +5,12 @@ const Note = require("../models/note");
 const api = supertest(app);
 const helper = require("./test_helper");
 
-beforeEach(async () => {
-  await Note.deleteMany({});
-  await Note.insertMany(helper.initialNotes);
-});
-
 describe("when there is initially some notes saved", () => {
+  beforeEach(async () => {
+    await Note.deleteMany({});
+    await Note.insertMany(helper.initialNotes);
+  });
+
   test("notes are returned as json", async () => {
     await api
       .get("/api/notes")

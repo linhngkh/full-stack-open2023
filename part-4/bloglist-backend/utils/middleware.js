@@ -12,15 +12,23 @@ const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: "unknown endpoint" });
 };
 
+const getTokenFrom = (request) => {
+  const authorization = request.get("authorization");
+  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+    return authorization.substring(7);
+  }
+  return null;
+};
+
 const tokenExtractor = (req, res, next) => {
   // code that extracts the token
-  const token = req.headers.authorization;
+  const token = getTokenFrom(req);
   // Check if the token is provided
   if (!token) {
     return res.status(401).json({ error: "Unauthorized" });
   }
   // Attach the extracted token to the request object for future use
-  request.token = token;
+  req.token = token;
   next();
 };
 

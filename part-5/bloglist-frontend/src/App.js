@@ -31,7 +31,10 @@ const App = () => {
         username,
         password,
       });
-      window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
+      if (user) {
+        window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
+      }
+
       blogService.setToken(user.token);
       setUser(user);
       setUsername("");
@@ -69,7 +72,7 @@ const App = () => {
   );
 
   const blog = () => {
-    blogs.map((blog) => <Blog key={blog.id} blog={blog} />);
+    blogs.map((blog) => <Blog key={blog.id} blog={blog} setUser={setUser} />);
   };
 
   return (

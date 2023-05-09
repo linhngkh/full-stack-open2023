@@ -1,8 +1,9 @@
 import React from "react";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, setUser }) => {
   const logout = () => {
     window.localStorage.removeItem("loggedBlogUser");
+    setUser("");
   };
 
   return (
