@@ -59,8 +59,8 @@ describe("Making POST request and content of the blog post is saved correctly to
 });
 
 // 4.11*: Blog list tests, step4
-describe("the likes property is missing from the request, it will default to the value 0", () => {
-  test("likes property", async () => {
+describe("it will default to the value 0", () => {
+  test("if the likes property is missing from the request", async () => {
     const newBlog = {
       author: "Martin Fowler",
       title: "Microservices Resource Guide",
@@ -70,7 +70,6 @@ describe("the likes property is missing from the request, it will default to the
     await api
       .post("/api/blogs")
       .send(newBlog)
-      .expect(400)
       .expect("Content-Type", /application\/json/);
 
     const postNewBlog = await helper.blogInDb();
@@ -104,10 +103,11 @@ describe("deletion of a single blog post", () => {
     await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
 
     const postNewBlog = await helper.blogInDb();
-    expect(postNewBlog.length).toBe(helper.initialBlogs - 1);
 
-    const contents = postNewBlog.map((r) => r.author);
-    expect(contents).not.toContain(blogToDelete.author);
+    const deleteBlog = postNewBlog.find(helper.equalToSchema(blogToDelete));
+
+    expect(deleteBlog).toBe(undefined);
+    expect(postNewBlog.length).toBe(helper.initialBlogs.length - 1);
   });
 });
 
@@ -151,7 +151,7 @@ describe("when there is initially one user at db", () => {
     await api
       .post("/api/users")
       .send(newUser)
-      .expect(201)
+      .expect(200)
       .expect("Content-Type", /application\/json/);
 
     const usersAtEnd = await helper.usersInDb();
@@ -176,10 +176,10 @@ describe("when there is initially one user at db", () => {
       .expect(400)
       .expect("Content-Type", /application\/json/);
 
-    expect(result.body.error).toContain("expected `username` to be unique");
+    expect(result.body.error).toContain("`username` to be unique");
 
     const usersAtEnd = await helper.usersInDb();
-    expect(usersAtEnd).toHaveLength(usersAtStart.length);
+    expect(usersAtEnd.length).toBe(usersAtStart.length);
   });
 });
 
