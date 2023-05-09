@@ -206,6 +206,42 @@ describe("when there is initially one user at db", () => {
   });
 });
 
+// 4.23*: bloglist expansion, step11
+describe("POST /api/blogs", () => {
+  test("should add a new blog with authentication", async () => {
+    let token = "eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW";
+    const newBlog = {
+      author: "Martin Fowler",
+      title: "Microservices Resource Guide",
+      url: "https://martinfowler.com/microservices/",
+      likes: 3,
+    };
+    const res = await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(201);
+    expect(res.body.title).toBe(newBlog.title);
+    expect(res.body.author).toBe(newBlog.author);
+  });
+
+  test("should return 401 Unauthorized if token is not provided", async () => {
+    const newBlog = {
+      author: "Martin Fowler",
+      title: "Microservices Resource Guide",
+      url: "https://martinfowler.com/microservices/",
+      likes: 3,
+    };
+
+    const response = await api.post("/api/blogs").send(newBlog);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body.error).toBe("Unauthorized");
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
