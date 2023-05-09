@@ -16,12 +16,30 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  useEffect(() => {
+    noteService.getAll().then((initialNotes) => {
+      setNotes(initialNotes);
+    });
+  }, []);
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedNoteappUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      noteService.setToken(user.token);
+    }
+  }, []);
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
       const user = await loginService.login({ username, password });
-
+      // Saving the token to the browser's local storage
+      window.localStorage.setItem("loggedNoteappUser", JSON.stringify(user));
+      // token
+      noteService.setToken(user.token);
       setUser(user);
       // reset after filling in the form
       setUsername("");
@@ -33,12 +51,6 @@ const App = () => {
       }, 5000);
     }
   };
-
-  useEffect(() => {
-    noteService.getAll().then((initialNotes) => {
-      setNotes(initialNotes);
-    });
-  }, []);
 
   const addNote = (event) => {
     event.preventDefault();
@@ -79,11 +91,6 @@ const App = () => {
 
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
-  const handleLogin = (event) => {
-    event.preventDefault();
-    console.log("logging in with", username, password);
-  };
-
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -120,8 +127,9 @@ const App = () => {
       <h1>Notes</h1>
       <Notification message={errorMessage} />
       {/* form */}
-      {user === null && loginForm()}
-      {user !== null && noteForm()}
+      {user === null ? loginForm() : noteForm()}
+
+      <h2>Notes</h2>
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? "important" : "all"}
