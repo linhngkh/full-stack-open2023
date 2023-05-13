@@ -3,27 +3,33 @@ const bcrypt = require("bcrypt");
 const loginRouter = require("express").Router();
 const User = require("../model/users");
 
-loginRouter.post("/", async (req, res) => {
-  const { username, password } = req.body;
+loginRouter.post("/", async (request, response) => {
+  const body = request.body;
 
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username: body.username });
   const passwordCorrect =
-    user === null ? false : await bcrypt.compare(password, user.passwordHash);
+    user === null
+      ? false
+      : await bcrypt.compare(body.password, user.passwordHash);
+
+  console.log(user);
 
   if (!(user && passwordCorrect)) {
-    return res.status(401).json({ error: "Invalid username and password" });
+    return response.status(401).json({
+      error: "Invalid username or password",
+    });
   }
+
   const userForToken = {
     username: user.username,
     id: user._id,
   };
 
-  // token expires in 60*60 seconds, that is, in one hour
-  const token = jwt.sign(userForToken, process.env.SECRET, {
-    expiresIn: 60 * 60,
-  });
+  const token = jwt.sign(userForToken, process.env.SECRET);
 
-  res.status(200).send({ token, username: user.username, name: user.name });
+  response
+    .status(200)
+    .send({ token, username: user.username, name: user.name });
 });
 
 module.exports = loginRouter;

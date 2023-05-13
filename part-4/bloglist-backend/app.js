@@ -10,7 +10,7 @@ const config = require("./utils/config");
 const bodyParser = require("body-parser");
 const middleware = require("./utils/middleware");
 
-const blogRoute = require("./controllers/bloglist");
+const blogRouter = require("./controllers/blogs");
 const userRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
 
@@ -29,12 +29,13 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(middleware.requestLogger);
+app.use(middleware.tokenExtractor);
 
 app.use("/api/login", loginRouter);
 app.use("/api/users", userRouter);
-app.use("/api/blogs", blogRoute);
+app.use("/api/blogs", blogRouter);
 
 app.use(middleware.errorHandler);
 app.use(middleware.unknownEndpoint);
-app.use(middleware.tokenExtractor);
+
 module.exports = app;

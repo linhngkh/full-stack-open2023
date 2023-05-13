@@ -2,7 +2,7 @@ import React from "react";
 
 const Blog = ({ blog, setUser }) => {
   const logout = () => {
-    window.localStorage.removeItem("loggedBlogUser");
+    window.localStorage.removeItem("loggedBlogappUser");
     setUser("");
   };
 

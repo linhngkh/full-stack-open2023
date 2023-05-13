@@ -1,19 +1,11 @@
 const Blog = require("../model/bloglist");
-const blogRoute = require("express").Router();
+const blogRouter = require("express").Router();
 const User = require("./users");
 const jwt = require("jsonwebtoken");
 const helper = require("../utils/middleware");
 // Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW
 
-const getTokenFrom = (req) => {
-  const authorization = req.get("authorization");
-  if (authorization && authorization.startsWith("Bearer")) {
-    return authorization.replace("Bearer ", "");
-  }
-  return null;
-};
-
-blogRoute.get("/", async (req, res, next) => {
+blogRouter.get("/", async (req, res, next) => {
   try {
     const blogs = await Blog.find({}).populate("user", {
       username: 1,
@@ -25,7 +17,7 @@ blogRoute.get("/", async (req, res, next) => {
   }
 });
 
-blogRoute.get("/:id", async (req, res) => {
+blogRouter.get("/:id", async (req, res) => {
   const blog = await Blog.findById(req.params.id);
   if (blog) {
     res.status(201).json(blog);
@@ -34,12 +26,20 @@ blogRoute.get("/:id", async (req, res) => {
   }
 });
 
-blogRoute.post("/", helper.tokenExtractor, async (req, res, next) => {
+const getTokenFrom = (req) => {
+  const authorization = req.get("authorization");
+  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+    return authorization.substring(7);
+  }
+  return null;
+};
+
+blogRouter.post("/", async (req, res, next) => {
   try {
     const body = req.body;
-
+    const token = getTokenFrom(req);
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
-    if (!decodedToken.id) {
+    if (!decodedToken.id || !token) {
       return response.status(401).json({ error: "token invalid" });
     }
     const user = await User.findById(decodedToken.id);
@@ -62,7 +62,7 @@ blogRoute.post("/", helper.tokenExtractor, async (req, res, next) => {
   }
 });
 
-blogRoute.delete("/:id", async (req, res, next) => {
+blogRouter.delete("/:id", async (req, res, next) => {
   try {
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
 
@@ -85,7 +85,7 @@ blogRoute.delete("/:id", async (req, res, next) => {
   }
 });
 
-blogRoute.put("/:id", async (req, res, next) => {
+blogRouter.put("/:id", async (req, res, next) => {
   try {
     const body = req.body;
     const blog = {
@@ -107,4 +107,4 @@ blogRoute.put("/:id", async (req, res, next) => {
   }
 });
 
-module.exports = blogRoute;
+module.exports = blogRouter;
