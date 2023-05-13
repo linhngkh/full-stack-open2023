@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import LoginForm from "./components/LoginForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -14,6 +15,7 @@ const App = () => {
   const [url, setUrl] = useState("");
   const [addBlogs, setAddBlogs] = useState("");
   const [notification, setNotification] = useState(null);
+  const [loginVisible, setLoginVisible] = useState(false);
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -27,7 +29,7 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
@@ -73,30 +75,6 @@ const App = () => {
     }
   };
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  );
-
   const blog = () => {
     blogs.map((blog) => (
       <Blog
@@ -110,14 +88,34 @@ const App = () => {
         url={url}
         setUrl={setUrl}
         createBlog={createBlog}
+        setNotification
       />
     ));
+  };
+
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? "none" : "" };
+    const showWhenVisible = { display: loginVisible ? "" : "none" };
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm username={username} password={password} />
+        </div>
+      </div>
+    );
   };
 
   return (
     <div>
       <h1>log in to application </h1>
-      {user === null ? loginForm() : <h2>blogs</h2> && blog()}
+      {user === null ? (
+        <LoginForm handleSubmit={handleSubmit} />
+      ) : (
+        <h2>blogs</h2> && blog()
+      )}
     </div>
   );
 };

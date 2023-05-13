@@ -10,9 +10,11 @@ const Blog = ({
   setTitle,
   setUrl,
   createBlog,
+  setNotification,
 }) => {
   const logout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
+    setNotification("Logged out successfully!");
     setUser("");
   };
 
