@@ -12,7 +12,8 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
-
+  const [addBlogs, setAddBlogs] = useState("");
+  const [notification, setNotification] = useState(null);
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -40,10 +41,32 @@ const App = () => {
 
       blogService.setToken(user.token);
       setUser(user);
-      setUsername("");
-      setPassword("");
+      username.reset();
+      password.reset();
+      setNotification("Successfully logged in", 5000);
     } catch (exception) {
-      setErrorMessage("Wrong credentials");
+      setErrorMessage("Wrong username or password");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const createBlog = async (event) => {
+    event.preventDefault();
+    try {
+      const newBlog = await blogService
+        .create({
+          title,
+          author,
+          url,
+        })
+        .then((data) => {
+          addBlogs(data);
+          setNotification(`a new blog ${title} by ${author} added`, 5000);
+        });
+    } catch (exception) {
+      setErrorMessage("Cant add a blog");
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
@@ -86,6 +109,7 @@ const App = () => {
         setAuthor={setAuthor}
         url={url}
         setUrl={setUrl}
+        createBlog={createBlog}
       />
     ));
   };

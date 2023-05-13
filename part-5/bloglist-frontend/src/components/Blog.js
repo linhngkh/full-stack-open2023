@@ -9,6 +9,7 @@ const Blog = ({
   setAuthor,
   setTitle,
   setUrl,
+  createBlog,
 }) => {
   const logout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
@@ -21,7 +22,7 @@ const Blog = ({
       <button onClick={logout}>logout</button>
       <div>
         <h1>create new</h1>
-        <form>
+        <form onSubmit={createBlog}>
           <input
             type="text"
             value={title}
