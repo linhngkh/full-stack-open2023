@@ -9,6 +9,9 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -72,7 +75,19 @@ const App = () => {
   );
 
   const blog = () => {
-    blogs.map((blog) => <Blog key={blog.id} blog={blog} setUser={setUser} />);
+    blogs.map((blog) => (
+      <Blog
+        key={blog.id}
+        blog={blog}
+        setUser={setUser}
+        title={title}
+        setTitle={setTitle}
+        author={author}
+        setAuthor={setAuthor}
+        url={url}
+        setUrl={setUrl}
+      />
+    ));
   };
 
   return (
