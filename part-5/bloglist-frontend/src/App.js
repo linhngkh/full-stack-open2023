@@ -77,7 +77,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>log in to application</h1>
+      <h1>log in to application </h1>
       {user === null ? loginForm() : <h2>blogs</h2> && blog()}
     </div>
   );
