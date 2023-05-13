@@ -1,4 +1,4 @@
-const Blog = require("../model/bloglist");
+const Blog = require("../model/blogs");
 const User = require("../model/users");
 const initialBlogs = [
   {

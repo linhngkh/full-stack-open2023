@@ -19,11 +19,8 @@ userRouter.post("/", async (req, res, next) => {
 
     if (!body.username || !body.password) {
       return res.status(400);
-      // .json({ error: "`username` and/or `password` are missing" });
     } else if (body.username.length < 3 || body.password.length < 3) {
-      return res
-        .status(400)
-        .json({ error: "username and/or password too short" });
+      return res.status(400).json({ error: "password minimum length 3" });
     } else {
       const user = new User({
         username: body.username,
@@ -38,7 +35,7 @@ userRouter.post("/", async (req, res, next) => {
         const savedUser = await user.save();
         res.json(savedUser);
       } else {
-        res.status(400).json({ error: "`username` to be unique" });
+        res.status(400).json({ error: "expected `username` to be unique" });
       }
     }
   } catch (error) {

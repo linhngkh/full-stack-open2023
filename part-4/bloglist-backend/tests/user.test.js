@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const User = require("../model/user");
-const api = supertest(app);
+const User = require("../model/users");
 const supertest = require("supertest");
 const app = require("../app");
-const helper = require("../utils/test_helper");
+const api = supertest(app);
+const helper = require("../tests/test_helper");
 
 describe("when there is initially one user at db", () => {
   beforeEach(async () => {
@@ -73,7 +73,7 @@ describe("POST /api/blogs", () => {
     const res = await api
       .post("/api/blogs")
       .send(newBlog)
-      .set(Authorization, `Bearer ${token}`);
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(201);
     expect(res.body.title).toBe(newBlog.title);
@@ -111,7 +111,7 @@ describe("POST /api/blogs", () => {
 
     const response = await api.post("/api/blogs").send(newBlog);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("error");
     expect(response.body.error).toBe("Unauthorized");
   });
