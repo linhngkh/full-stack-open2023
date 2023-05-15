@@ -8,13 +8,14 @@ const userSchema = new mongoose.Schema({
       ref: "Blog",
     },
   ],
+  name: String,
   username: {
     type: String,
     minLength: 3,
     unique: true,
     require: true,
   },
-  name: String,
+
   passwordHash: String,
 });
 userSchema.plugin(uniqueValidator);
