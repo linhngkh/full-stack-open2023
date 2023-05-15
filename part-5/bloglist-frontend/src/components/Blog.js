@@ -14,8 +14,9 @@ const Blog = ({
 
   return (
     <div>
-      {blog.title} {blog.author} logged in{" "}
-      <button onClick={logout}>logout</button>
+      <h2>blogs</h2>
+      {blog.author} logged in <button onClick={logout}>logout</button>
+      {blog.title}
     </div>
   );
 };

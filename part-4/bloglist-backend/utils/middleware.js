@@ -14,8 +14,8 @@ const unknownEndpoint = (req, res) => {
 
 const getTokenFrom = (request) => {
   const authorization = request.get("authorization");
-  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
-    return authorization.substring(7);
+  if (authorization && authorization.startsWith("Bearer ")) {
+    return authorization.replace("Bearer ", "");
   }
   return null;
 };
@@ -23,10 +23,6 @@ const getTokenFrom = (request) => {
 const tokenExtractor = (req, res, next) => {
   // code that extracts the token
   const token = getTokenFrom(req);
-  // Check if the token is provided
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
   // Attach the extracted token to the request object for future use
   req.token = token;
   next();

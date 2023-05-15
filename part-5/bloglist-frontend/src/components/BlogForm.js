@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const BlogForm = ({
   author,
@@ -7,12 +7,13 @@ const BlogForm = ({
   setAuthor,
   setTitle,
   setUrl,
-  createBlog,
+  addBlog,
 }) => {
+ 
+
   return (
     <div>
-      <h1>create new</h1>
-      <form onSubmit={createBlog}>
+      <form onSubmit={addBlog}>
         <input
           type="text"
           value={title}

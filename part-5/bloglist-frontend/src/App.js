@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -15,9 +16,12 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
-  const [addBlogs, setAddBlogs] = useState("");
+
   const [notification, setNotification] = useState(null);
   const [loginVisible, setLoginVisible] = useState(false);
+
+  const blogFormRef = useRef();
+
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -56,27 +60,6 @@ const App = () => {
     }
   };
 
-  const createBlog = (event) => {
-    event.preventDefault();
-    try {
-      blogService
-        .create({
-          title,
-          author,
-          url,
-        })
-        .then((data) => {
-          addBlogs(data);
-          setNotification(`a new blog ${title} by ${author} added`, 5000);
-        });
-    } catch (exception) {
-      setNotification(exception.response.data.error, 3000);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
-  };
-
   const blog = () => {
     blogs.map((blog) => (
       <Blog
@@ -89,12 +72,12 @@ const App = () => {
         setAuthor={setAuthor}
         url={url}
         setUrl={setUrl}
-        createBlog={createBlog}
-        setNotification
+        setNotification={setNotification}
       />
     ));
   };
 
+  // LOGIN FORM
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? "none" : "" };
     const showWhenVisible = { display: loginVisible ? "" : "none" };
@@ -117,17 +100,47 @@ const App = () => {
     );
   };
 
+  // ADD BLOG
+
+  const addBlog = (e) => {
+    e.preventDefault();
+    blogFormRef.current.toggleVisibility();
+    const blogObject = {
+      title,
+      author,
+      url,
+      likes: 0,
+    };
+    blogService.create(blogObject).then((returnedBlog) => {
+      setBlogs(blogs.concat(returnedBlog));
+      setAuthor("");
+      setTitle("");
+      setUrl("");
+      setNotification(`a new blog ${title} by ${author} added`, 5000);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    });
+  };
+
+  // BLOG FORM
   const blogForm = () => (
-    <Togglable buttonLabel="new blog">
-      <BlogForm createBlog={createBlog} />
+    <Togglable buttonLabel="new blog" ref={blogFormRef}>
+      <BlogForm
+        setNotification={setNotification}
+        setTitle={setTitle}
+        setUrl={setUrl}
+        setAuthor={setAuthor}
+        setErrorMessage={setErrorMessage}
+        addBlog={addBlog}
+      />
     </Togglable>
   );
 
   return (
     <div>
-      <h1>log in to application </h1>
-      {user === null ? loginForm() : <h2>blogs</h2> && blog()}
-      
+      <Notification message={errorMessage} />
+      {user === null ? loginForm() : blog() }
     </div>
   );
 };
