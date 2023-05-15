@@ -3,6 +3,8 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import LoginForm from "./components/LoginForm";
+import Togglable from "./components/Togglable";
+import BlogForm from "./components/BlogForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -29,7 +31,7 @@ const App = () => {
     }
   }, []);
 
-  const handleSubmit = async (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
@@ -54,10 +56,10 @@ const App = () => {
     }
   };
 
-  const createBlog = async (event) => {
+  const createBlog = (event) => {
     event.preventDefault();
     try {
-      const newBlog = await blogService
+      blogService
         .create({
           title,
           author,
@@ -68,7 +70,7 @@ const App = () => {
           setNotification(`a new blog ${title} by ${author} added`, 5000);
         });
     } catch (exception) {
-      setErrorMessage("Cant add a blog");
+      setNotification(exception.response.data.error, 3000);
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
@@ -102,20 +104,30 @@ const App = () => {
           <button onClick={() => setLoginVisible(true)}>log in</button>
         </div>
         <div style={showWhenVisible}>
-          <LoginForm username={username} password={password} />
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
         </div>
       </div>
     );
   };
 
+  const blogForm = () => (
+    <Togglable buttonLabel="new blog">
+      <BlogForm createBlog={createBlog} />
+    </Togglable>
+  );
+
   return (
     <div>
       <h1>log in to application </h1>
-      {user === null ? (
-        <LoginForm handleSubmit={handleSubmit} />
-      ) : (
-        <h2>blogs</h2> && blog()
-      )}
+      {user === null ? loginForm() : <h2>blogs</h2> && blog()}
+      
     </div>
   );
 };
