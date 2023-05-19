@@ -1,12 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Blogs = ({ blog }) => {
+  const [view, setView] = useState(false);
+
   return (
     <div>
-      <Link to={`/blogs/${blog.id}`}>
-        {blog.title} - {blog.author}
-      </Link>
+      <div className="pt-3 pl-2 border-solid border-slate-700 border-2 mb-5 flex gap-3 items-center">
+        <p>{blog.title}</p>
+        <span>
+          <button
+            onClick={() => setView(true)}
+            className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"
+          >
+            view
+          </button>
+        </span>
+      </div>
+      {view && (
+        <div className="pt-3 pl-2 border-solid border-slate-700 border-2 mb-5 flex gap-3 items-center">
+          <div>
+            <div className="flex gap-2">
+              <p>{blog.title}</p>
+              <button
+                onClick={() => setView(false)}
+                className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"
+              >
+                hide
+              </button>
+            </div>
+            <p>{blog.url}</p>
+            <div className="flex gap-2">
+              <p>likes {blog.likes}</p>{" "}
+              <span>
+                <button className="px-2 py-0.5 bg-slate-400 rounded-lg text-white">
+                  like
+                </button>
+              </span>
+            </div>
+
+            <p>{blog.author}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
