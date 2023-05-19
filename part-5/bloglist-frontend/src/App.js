@@ -7,13 +7,12 @@ import loginService from "./services/login";
 import Blogs from "./components/Blogs";
 import Header from "./components/Header";
 
-import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import CreateBlog from "./components/CreateBlog";
+import Button from "./components/utils/Button";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -22,8 +21,6 @@ const App = () => {
   const [url, setUrl] = useState("");
 
   const navigate = useNavigate();
-  const loginFormRef = useRef();
-  const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -41,7 +38,6 @@ const App = () => {
   // HANDLE LOGIN
   const handleLogin = async (event) => {
     event.preventDefault();
-    console.log("logging with", username, password);
     try {
       const user = await loginService.login({
         username,
@@ -71,7 +67,6 @@ const App = () => {
 
   // ADD BLOG
   const addBlog = async (title, author, url) => {
-    blogFormRef.current.toggleVisibility();
     const blogObject = {
       title,
       author,
@@ -96,22 +91,23 @@ const App = () => {
       <ToastContainer />
       <div>
         {user === null ? (
-          <Togglable buttonLabel="login" ref={loginFormRef}>
-            <LoginForm
-              username={username}
-              password={password}
-              handleUsernameChange={({ target }) => setUsername(target.value)}
-              handlePasswordChange={({ target }) => setPassword(target.value)}
-              handleLogin={handleLogin}
-            />
-          </Togglable>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleLogin={handleLogin}
+          />
         ) : (
           <>
             <Header username={username} logout={logout} />
+            <div className="p-2 w-1/3">
+              <h1>blogs</h1>
+              <p>{username} logged in</p>
+              <Button>Logout</Button>
+            </div>
             <div className="mt-4 p-2">
-              <Togglable buttonLabel="New blog" ref={blogFormRef}>
-                <CreateBlog handleAddBlog={addBlog} />
-              </Togglable>
+              <CreateBlog handleAddBlog={addBlog} />
             </div>
             <div>
               {blogs.map((blog, index) => (

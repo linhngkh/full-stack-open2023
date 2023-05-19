@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 const Blogs = ({ blog }) => {
   const [view, setView] = useState(false);

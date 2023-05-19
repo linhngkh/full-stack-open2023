@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import Button from "./utils/Button";
 import PropTypes from "prop-types";
 

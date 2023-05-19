@@ -1,11 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Button from "./utils/Button";
 
-const Header = ({ username, logout }) => {
-  const handleLogout = async () => {
-    await logout();
-  };
+const Header = () => {
   return (
     <>
       <nav className="flex justify-evenly flex-row  items-center w-full bg-slate-900 text-white p-6">
@@ -14,11 +10,6 @@ const Header = ({ username, logout }) => {
         <Link to={"/"}>Home</Link>
         <Link to={"/user"}>Users</Link>
       </nav>
-      <div className="p-2 w-1/3">
-        <h1>blogs</h1>
-        <p>{username} logged in</p>
-        <Button onClick={handleLogout}>Logout</Button>
-      </div>
     </>
   );
 };
