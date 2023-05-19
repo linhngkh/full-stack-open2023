@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import Blogs from "./components/Blogs";
 import Blog from "./components/Blog";
+import "./styles.css"
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
