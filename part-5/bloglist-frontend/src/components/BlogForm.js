@@ -18,6 +18,7 @@ const BlogForm = ({
 
       <form onSubmit={handleSubmit} className="flex flex-col w-1/3 gap-1">
         <input
+          type="title"
           name="title"
           value={title}
           placeholder="title"
@@ -26,6 +27,7 @@ const BlogForm = ({
         />
 
         <input
+          type="author"
           name="author"
           value={author}
           placeholder="author"
@@ -34,6 +36,7 @@ const BlogForm = ({
         />
 
         <input
+          type="url"
           name="url"
           value={url}
           placeholder="url"

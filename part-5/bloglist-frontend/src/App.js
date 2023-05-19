@@ -9,11 +9,11 @@ import Header from "./components/Header";
 
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
-
+import Button from "./components/utils/Button";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [newBlog, setNewBlog] = useState("");
-
+  const [loginVisible, setLoginVisible] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -72,7 +72,6 @@ const App = () => {
   const blog = () => {
     return (
       <div>
-        <h2>blogs</h2>
         {blogs.map((blog, index) => (
           <Blogs key={index} blog={blog} />
         ))}
@@ -83,28 +82,24 @@ const App = () => {
   // LOGIN FORM
 
   const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? "none" : "" };
+    const showWhenVisible = { display: loginVisible ? "" : "none" };
     return (
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
         </div>
-        <div>
-          password
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
+        <div style={showWhenVisible} className="space-y-3">
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
           />
+          <Button onClick={() => setLoginVisible(false)}>cancel</Button>
         </div>
-        <button type="submit">login</button>
-      </form>
+      </div>
     );
   };
 
@@ -156,10 +151,10 @@ const App = () => {
       <ToastContainer />
       <div>
         {user === null ? (
-          <>
-            <h2>log in to application</h2>
+          <div className="flex mx-auto flex-col h-screen justify-center items-center ">
+            <h2 className="text-xl p-4 font-bold">Log in to application</h2>
             {loginForm()}
-          </>
+          </div>
         ) : (
           <>
             <Header username={username} logout={logout} />

@@ -15,6 +15,7 @@ const Header = ({ username, logout }) => {
         <Link to={"/user"}>Users</Link>
       </nav>
       <div className="p-2 w-1/3">
+        <h1>blogs</h1>
         <p>{username} logged in</p>
         <Button onClick={handleLogout}>Logout</Button>
       </div>

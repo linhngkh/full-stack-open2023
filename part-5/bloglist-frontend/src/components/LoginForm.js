@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import Button from "./utils/Button";
 
 const LoginForm = ({
   handleLogin,
@@ -7,6 +8,7 @@ const LoginForm = ({
   password,
   handleUsernameChange,
 }) => {
+  const inputStyles = `w-full bg-slate-200 mb-3 rounded-lg px-3 py-2`;
   return (
     <form onSubmit={handleLogin}>
       <div>
@@ -15,6 +17,7 @@ const LoginForm = ({
           type="text"
           value={username}
           name="Username"
+          className={inputStyles}
           onChange={handleUsernameChange}
         />
       </div>
@@ -24,10 +27,11 @@ const LoginForm = ({
           type="password"
           value={password}
           name="Password"
+          className={inputStyles}
           onChange={handlePasswordChange}
         />
-      </div>
-      <button type="submit">login</button>
+      </div>{" "}
+      <Button type="submit">Login</Button>
     </form>
   );
 };
