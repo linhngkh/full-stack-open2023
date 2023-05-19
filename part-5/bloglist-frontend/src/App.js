@@ -9,11 +9,11 @@ import Header from "./components/Header";
 
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
-import Button from "./components/utils/Button";
+import Togglable from "./components/Togglable";
+import CreateBlog from "./components/CreateBlog";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [newBlog, setNewBlog] = useState("");
-  const [loginVisible, setLoginVisible] = useState(false);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -23,14 +23,7 @@ const App = () => {
 
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    title: "",
-    author: "",
-    url: "",
-  });
-
   const blogFormRef = useRef();
-  const loginFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -62,58 +55,22 @@ const App = () => {
       setUser(user);
       navigate("/");
       toast.success("Succeeded login!");
-      username.reset();
-      password.reset();
+      setUser("");
+      setPassword("");
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
-  };
-  // RENDER BLOGS
-  const blog = () => {
-    return (
-      <div>
-        {blogs.map((blog, index) => (
-          <Blogs key={index} blog={blog} />
-        ))}
-      </div>
-    );
-  };
-
-  // LOGIN FORM
-
-  const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? "none" : "" };
-    const showWhenVisible = { display: loginVisible ? "" : "none" };
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible} className="space-y-3">
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-          <Button onClick={() => setLoginVisible(false)}>cancel</Button>
-        </div>
-      </div>
-    );
   };
 
   //LOG OUT
   const logout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
+    blogService.setToken(null);
     window.location.reload();
-    setUser("");
-    setPassword("");
   };
 
   // ADD BLOG
-  const addBlog = (e) => {
-    e.preventDefault();
+  const addBlog = async (title, author, url) => {
     blogFormRef.current.toggleVisibility();
     const blogObject = {
       title,
@@ -121,29 +78,22 @@ const App = () => {
       url,
       likes: 0,
     };
-    blogService.create(blogObject).then((returnedBlog) => {
-      setNewBlog(blogs.concat(returnedBlog));
+    try {
+      const blog = await blogService.create(blogObject);
+      setBlogs(blogs.concat(blog));
+
       toast.success(`Added a new blog: ${title} by ${author}`, 3000);
       setAuthor("");
       setTitle("");
       setUrl("");
-    });
-  };
-
-  // RESET BLOG FORM
-  const resetForm = () => {
-    setFormData({ title: "", author: "", url: "" });
+    } catch (error) {
+      toast.error(error?.data?.message || error.error);
+    }
   };
 
   // BLOG FORM
   const blogForm = () => (
-    <BlogForm
-      handleSubmit={addBlog}
-      resetForm={resetForm}
-      title={title}
-      author={author}
-      url={url}
-    />
+    <BlogForm handleSubmit={addBlog} title={title} author={author} url={url} />
   );
 
   return (
@@ -151,15 +101,25 @@ const App = () => {
       <ToastContainer />
       <div>
         {user === null ? (
-          <div className="flex mx-auto flex-col h-screen justify-center items-center ">
-            <h2 className="text-xl p-4 font-bold">Log in to application</h2>
-            {loginForm()}
-          </div>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
         ) : (
           <>
             <Header username={username} logout={logout} />
-            {blog()}
-            {blogForm()}
+            <div>
+              <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                <CreateBlog handleAddBlog={addBlog} />
+              </Togglable>
+            </div>
+
+            {blogs.map((blog, index) => (
+              <Blogs blog={blog} key={index} />
+            ))}
           </>
         )}
       </div>
