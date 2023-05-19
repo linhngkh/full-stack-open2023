@@ -94,12 +94,26 @@ const App = () => {
           blog.id !== id ? blog : returnedBlog
         );
         const sortedBlog = updatedBlogs.sort((a, b) => b.likes - a.likes);
+
         setBlogs(sortedBlog);
       });
-
       toast.success("Successful updated like");
     } catch (error) {
       toast.error("Cant update Likes");
+    }
+  };
+
+  // DELETE BLOG
+  const deleteBlog = async (id) => {
+    try {
+      await blogService.deleteOne(id).then(() => {
+        const removeBlog = blogs.filter((blog) => blog.id !== id);
+        const sortedBlog = removeBlog.sort((a, b) => b.likes - a.likes);
+        setBlogs(sortedBlog);
+      });
+      toast.success("Successful delete blog");
+    } catch (error) {
+      toast.error("Cant delete blog");
     }
   };
 
@@ -117,18 +131,23 @@ const App = () => {
           />
         ) : (
           <>
-            <Header username={username} logout={logout} />
+            <Header />
             <div className="p-2 w-1/3">
               <h1>blogs</h1>
               <p>{username} logged in</p>
-              <Button>Logout</Button>
+              <Button onClick={() => logout()}>Logout</Button>
             </div>
             <div className="mt-4 p-2">
               <CreateBlog handleAddBlog={addBlog} />
             </div>
             <div>
               {blogs.map((blog, index) => (
-                <Blogs blog={blog} key={index} updateLikes={updateLikes} />
+                <Blogs
+                  blog={blog}
+                  key={index}
+                  updateLikes={updateLikes}
+                  deleteBlog={deleteBlog}
+                />
               ))}
             </div>
           </>

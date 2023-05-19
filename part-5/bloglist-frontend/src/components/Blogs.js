@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Blogs = ({ blog, updateLikes, user }) => {
+const Blogs = ({ blog, updateLikes, deleteBlog }) => {
   const [view, setView] = useState(false);
 
   const addLikes = (blog) => {
@@ -11,6 +11,15 @@ const Blogs = ({ blog, updateLikes, user }) => {
       title: blog.title,
       url: blog.url,
     });
+  };
+
+  const deleteOneBlog = (blog) => {
+    const confirm = window.confirm(
+      `Remove blog ${blog.title} by ${blog.author}`
+    );
+    if (confirm) {
+      deleteBlog(blog.id);
+    }
   };
 
   return (
@@ -43,7 +52,7 @@ const Blogs = ({ blog, updateLikes, user }) => {
               <p>likes {blog.likes}</p>{" "}
               <span>
                 <button
-                  onClick={addLikes(blog)}
+                  onClick={() => addLikes(blog)}
                   className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"
                 >
                   like
@@ -53,9 +62,14 @@ const Blogs = ({ blog, updateLikes, user }) => {
 
             <p>{blog.author}</p>
           </div>
-          <button className="px-2 py-0.5 bg-blue-400 rounded-lg text-white ">
-            remove
-          </button>
+          <div className="">
+            <button
+              onClick={() => deleteOneBlog(blog)}
+              className="px-2 py-0.5 bg-blue-400 rounded-lg text-white "
+            >
+              remove
+            </button>
+          </div>
         </div>
       )}
     </div>
