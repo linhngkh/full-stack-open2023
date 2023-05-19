@@ -2,27 +2,35 @@ import { useState, useEffect, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-
 import blogService from "./services/blogs";
 import loginService from "./services/login";
-import Blog from "./components/Blog";
+import Blogs from "./components/Blogs";
 import Header from "./components/Header";
+
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
-import Togglable from "./components/Tooglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
+  const [newBlog, setNewBlog] = useState("");
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
-  const [loginVisible, setLoginVisible] = useState(false);
+
   const navigate = useNavigate();
 
+  const [formData, setFormData] = useState({
+    title: "",
+    author: "",
+    url: "",
+  });
+
   const blogFormRef = useRef();
+  const loginFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -52,6 +60,7 @@ const App = () => {
 
       blogService.setToken(user.token);
       setUser(user);
+      navigate("/");
       toast.success("Succeeded login!");
       username.reset();
       password.reset();
@@ -59,13 +68,13 @@ const App = () => {
       toast.error(error?.data?.message || error.error);
     }
   };
-
+  // RENDER BLOGS
   const blog = () => {
     return (
       <div>
         <h2>blogs</h2>
         {blogs.map((blog, index) => (
-          <Blog key={index} blog={blog} />
+          <Blogs key={index} blog={blog} />
         ))}
       </div>
     );
@@ -75,15 +84,27 @@ const App = () => {
 
   const loginForm = () => {
     return (
-      <Togglable buttonLabel="login">
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={handleLogin}
-        />
-      </Togglable>
+      <form onSubmit={handleLogin}>
+        <div>
+          username
+          <input
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          password
+          <input
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit">login</button>
+      </form>
     );
   };
 
@@ -93,11 +114,9 @@ const App = () => {
     window.location.reload();
     setUser("");
     setPassword("");
-    navigate("/");
   };
 
   // ADD BLOG
-
   const addBlog = (e) => {
     e.preventDefault();
     blogFormRef.current.toggleVisibility();
@@ -108,7 +127,7 @@ const App = () => {
       likes: 0,
     };
     blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
+      setNewBlog(blogs.concat(returnedBlog));
       toast.success(`Added a new blog: ${title} by ${author}`, 3000);
       setAuthor("");
       setTitle("");
@@ -116,12 +135,22 @@ const App = () => {
     });
   };
 
+  // RESET BLOG FORM
+  const resetForm = () => {
+    setFormData({ title: "", author: "", url: "" });
+  };
+
   // BLOG FORM
   const blogForm = () => (
-    <Togglable buttonLabel="new blog" ref={blogFormRef}>
-      <BlogForm handleSubmit={addBlog} />
-    </Togglable>
+    <BlogForm
+      handleSubmit={addBlog}
+      resetForm={resetForm}
+      title={title}
+      author={author}
+      url={url}
+    />
   );
+
   return (
     <>
       <ToastContainer />
@@ -132,7 +161,11 @@ const App = () => {
             {loginForm()}
           </>
         ) : (
-          <Header username={username} logout={logout} />
+          <>
+            <Header username={username} logout={logout} />
+            {blog()}
+            {blogForm()}
+          </>
         )}
       </div>
     </>

@@ -1,14 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react'
 
-const Blogs = ({ blog }) => {
+const Blog = () => {
   return (
-    <div>
-      <Link to={`/blogs/${blog.id}`}>
-        {blog.title} - {blog.author}
-      </Link>
-    </div>
-  );
-};
+    <div>Blog</div>
+  )
+}
 
-export default Blogs;
+export default Blog

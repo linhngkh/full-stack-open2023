@@ -7,12 +7,13 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import Blogs from "./components/Blog";
-
+import Blogs from "./components/Blogs";
+import Blog from "./components/Blog";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="/blogs" element={<Blogs />} />
+      <Route path="/blogs/:id" element={<Blog />} />
     </Route>
   )
 );
