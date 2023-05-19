@@ -87,11 +87,11 @@ const App = () => {
   };
 
   // UPDATE BLOG
-  const updateLikes = async (_id, updateBlog) => {
+  const updateLikes = async (id, updateBlog) => {
     try {
-      await blogService.update(_id, updateBlog).then((returnedBlog) => {
+      await blogService.update(id, updateBlog).then((returnedBlog) => {
         const updatedBlogs = blogs.map((blog) =>
-          blog.id !== _id ? blog : returnedBlog
+          blog.id !== id ? blog : returnedBlog
         );
         const sortedBlog = updatedBlogs.sort((a, b) => b.likes - a.likes);
         setBlogs(sortedBlog);

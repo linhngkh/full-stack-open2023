@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Blogs = ({ blog, updateLikes }) => {
+const Blogs = ({ blog, updateLikes, user }) => {
   const [view, setView] = useState(false);
 
   const addLikes = (blog) => {
@@ -53,6 +53,9 @@ const Blogs = ({ blog, updateLikes }) => {
 
             <p>{blog.author}</p>
           </div>
+          <button className="px-2 py-0.5 bg-blue-400 rounded-lg text-white ">
+            remove
+          </button>
         </div>
       )}
     </div>
