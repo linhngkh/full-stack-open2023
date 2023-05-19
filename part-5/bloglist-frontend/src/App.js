@@ -1,24 +1,19 @@
 import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
+import { toast } from "react-toastify";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
-import LoginForm from "./components/LoginForm";
-import Togglable from "./components/Togglable";
-import BlogForm from "./components/BlogForm";
-import Notification from "./components/Notification";
+import Blog from "./components/Blog";
+import Header from "./components/Header";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
-
-  const [notification, setNotification] = useState(null);
-  const [loginVisible, setLoginVisible] = useState(false);
 
   const blogFormRef = useRef();
 
@@ -35,9 +30,10 @@ const App = () => {
     }
   }, []);
 
+  // HANDLE LOGIN
   const handleLogin = async (event) => {
     event.preventDefault();
-
+    console.log("logging with", username, password);
     try {
       const user = await loginService.login({
         username,
@@ -51,53 +47,54 @@ const App = () => {
       setUser(user);
       username.reset();
       password.reset();
-      setNotification("Successfully logged in", 5000);
     } catch (exception) {
-      setErrorMessage("Wrong username or password");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      toast.error("Wrong username or password");
     }
   };
 
   const blog = () => {
-    blogs.map((blog) => (
-      <Blog
-        key={blog.id}
-        blog={blog}
-        setUser={setUser}
-        title={title}
-        setTitle={setTitle}
-        author={author}
-        setAuthor={setAuthor}
-        url={url}
-        setUrl={setUrl}
-        setNotification={setNotification}
-      />
-    ));
+    return (
+      <div>
+        <h2>blogs</h2>
+        {blogs.map((blog, index) => (
+          <Blog key={index} blog={blog} />
+        ))}
+      </div>
+    );
   };
 
   // LOGIN FORM
-  const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? "none" : "" };
-    const showWhenVisible = { display: loginVisible ? "" : "none" };
-    return (
+
+  const loginForm = () => (
+    <form onSubmit={handleLogin}>
       <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
+        username
+        <input
+          type="text"
+          value={username}
+          name="Username"
+          onChange={({ target }) => setUsername(target.value)}
+        />
       </div>
-    );
+      <div>
+        password
+        <input
+          type="password"
+          value={password}
+          name="Password"
+          onChange={({ target }) => setPassword(target.value)}
+        />
+      </div>
+      <button type="submit">login</button>
+    </form>
+  );
+
+  //LOG OUT
+  const logout = () => {
+    window.localStorage.removeItem("loggedBlogappUser");
+    setUser("");
+    setPassword("");
+    toast.success("Logout succeed!");
   };
 
   // ADD BLOG
@@ -113,34 +110,25 @@ const App = () => {
     };
     blogService.create(blogObject).then((returnedBlog) => {
       setBlogs(blogs.concat(returnedBlog));
+      toast.success(`Added a new blog: ${title} by ${author}`, 3000);
       setAuthor("");
       setTitle("");
       setUrl("");
-      setNotification(`a new blog ${title} by ${author} added`, 5000);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
     });
   };
 
   // BLOG FORM
-  const blogForm = () => (
-    <Togglable buttonLabel="new blog" ref={blogFormRef}>
-      <BlogForm
-        setNotification={setNotification}
-        setTitle={setTitle}
-        setUrl={setUrl}
-        setAuthor={setAuthor}
-        setErrorMessage={setErrorMessage}
-        addBlog={addBlog}
-      />
-    </Togglable>
-  );
 
   return (
     <div>
-      <Notification message={errorMessage} />
-      {user === null ? loginForm() : blog() }
+      {user === null ? (
+        <>
+          <h2>log in to application</h2>
+          {loginForm()}
+        </>
+      ) : (
+        <Header user={user} logout={logout} />
+      )}
     </div>
   );
 };
