@@ -22,7 +22,7 @@ const App = () => {
   const [url, setUrl] = useState("");
 
   const navigate = useNavigate();
-
+  const loginFormRef = useRef();
   const blogFormRef = useRef();
 
   useEffect(() => {
@@ -91,28 +91,25 @@ const App = () => {
     }
   };
 
-  // BLOG FORM
-  const blogForm = () => (
-    <BlogForm handleSubmit={addBlog} title={title} author={author} url={url} />
-  );
-
   return (
     <>
       <ToastContainer />
       <div>
         {user === null ? (
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
+          <Togglable buttonLabel="login" ref={loginFormRef}>
+            <LoginForm
+              username={username}
+              password={password}
+              handleUsernameChange={({ target }) => setUsername(target.value)}
+              handlePasswordChange={({ target }) => setPassword(target.value)}
+              handleLogin={handleLogin}
+            />
+          </Togglable>
         ) : (
           <>
             <Header username={username} logout={logout} />
-            <div>
-              <Togglable buttonLabel="new blog" ref={blogFormRef}>
+            <div className="mt-4 p-2">
+              <Togglable buttonLabel="New blog" ref={blogFormRef}>
                 <CreateBlog handleAddBlog={addBlog} />
               </Togglable>
             </div>

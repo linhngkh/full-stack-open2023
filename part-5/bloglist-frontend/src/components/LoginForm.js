@@ -1,13 +1,13 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import Button from "./utils/Button";
 import PropTypes from "prop-types";
 
 const LoginForm = ({
   handleLogin,
-  username,
   handlePasswordChange,
-  password,
   handleUsernameChange,
+  username,
+  password,
 }) => {
   const inputStyles = `w-full bg-slate-200 mb-3 rounded-lg px-3 py-2`;
   return (
@@ -41,11 +41,11 @@ const LoginForm = ({
 };
 
 LoginForm.propTypes = {
-  handleLogin: PropTypes.func.isRequired,
-  handlePasswordChange: PropTypes.func.isRequired,
-  handleUsernameChange: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
+  handleSubmit: PropTypes.func,
+  handleUsernameChange: PropTypes.func,
+  handlePasswordChange: PropTypes.func,
+  username: PropTypes.string,
+  password: PropTypes.string,
 };
 
 export default LoginForm;
