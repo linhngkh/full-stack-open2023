@@ -116,10 +116,11 @@ const App = () => {
                 <CreateBlog handleAddBlog={addBlog} />
               </Togglable>
             </div>
-
-            {blogs.map((blog, index) => (
-              <Blogs blog={blog} key={index} />
-            ))}
+            <ul>
+              {blogs.map((blog, index) => (
+                <Blogs blog={blog} key={index} />
+              ))}
+            </ul>
           </>
         )}
       </div>
