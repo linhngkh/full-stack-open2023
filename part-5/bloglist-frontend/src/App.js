@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
 import blogService from "./services/blogs";
@@ -26,12 +27,6 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user, navigate]);
-
-  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
@@ -55,10 +50,11 @@ const App = () => {
 
       blogService.setToken(user.token);
       setUser(user);
+      toast.success("Succeeded login!");
       username.reset();
       password.reset();
-    } catch (exception) {
-      toast.error("Wrong username or password");
+    } catch (error) {
+      toast.error(error?.data?.message || error.error);
     }
   };
 
@@ -106,7 +102,6 @@ const App = () => {
     setUser("");
     setPassword("");
     navigate("/");
-    toast.success("Logout succeed!");
   };
 
   // ADD BLOG
@@ -132,16 +127,19 @@ const App = () => {
   // BLOG FORM
 
   return (
-    <div>
-      {user === null ? (
-        <>
-          <h2>log in to application</h2>
-          {loginForm()}
-        </>
-      ) : (
-        <Header user={user} logout={logout} />
-      )}
-    </div>
+    <>
+      <ToastContainer />
+      <div>
+        {user === null ? (
+          <>
+            <h2>log in to application</h2>
+            {loginForm()}
+          </>
+        ) : (
+          <Header username={username} logout={logout} />
+        )}
+      </div>
+    </>
   );
 };
 
