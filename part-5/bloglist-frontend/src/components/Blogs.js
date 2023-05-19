@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 
-const Blogs = ({ blog }) => {
+const Blogs = ({ blog, updateLikes }) => {
   const [view, setView] = useState(false);
+
+  const addLikes = (blog) => {
+    updateLikes(blog.id, {
+      user: blog.user,
+      author: blog.author,
+      likes: blog.likes,
+      title: blog.title,
+      url: blog.url,
+    });
+  };
 
   return (
     <div>
@@ -32,7 +42,10 @@ const Blogs = ({ blog }) => {
             <div className="flex gap-2">
               <p>likes {blog.likes}</p>{" "}
               <span>
-                <button className="px-2 py-0.5 bg-slate-400 rounded-lg text-white">
+                <button
+                  onClick={addLikes(blog)}
+                  className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"
+                >
                   like
                 </button>
               </span>

@@ -86,6 +86,23 @@ const App = () => {
     }
   };
 
+  // UPDATE BLOG
+  const updateLikes = async (_id, updateBlog) => {
+    try {
+      await blogService.update(_id, updateBlog).then((returnedBlog) => {
+        const updatedBlogs = blogs.map((blog) =>
+          blog.id !== _id ? blog : returnedBlog
+        );
+        const sortedBlog = updatedBlogs.sort((a, b) => b.likes - a.likes);
+        setBlogs(sortedBlog);
+      });
+
+      toast.success("Successful updated like");
+    } catch (error) {
+      toast.error("Cant update Likes");
+    }
+  };
+
   return (
     <>
       <ToastContainer />
@@ -111,7 +128,7 @@ const App = () => {
             </div>
             <div>
               {blogs.map((blog, index) => (
-                <Blogs blog={blog} key={index} />
+                <Blogs blog={blog} key={index} updateLikes={updateLikes} />
               ))}
             </div>
           </>
