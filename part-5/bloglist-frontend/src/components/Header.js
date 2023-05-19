@@ -5,7 +5,7 @@ const Header = ({ username, logout }) => {
     await logout();
   };
   return (
-    <nav className="bg-pink-200">
+    <nav className="">
       <h1>BLOGS</h1>
       <div>
         <Link to={"/"}>Home</Link>

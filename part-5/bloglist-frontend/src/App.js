@@ -7,17 +7,19 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Blog from "./components/Blog";
 import Header from "./components/Header";
+import BlogForm from "./components/BlogForm";
+import LoginForm from "./components/LoginForm";
+import Togglable from "./components/Tooglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
-
+  const [loginVisible, setLoginVisible] = useState(false);
   const navigate = useNavigate();
 
   const blogFormRef = useRef();
@@ -71,29 +73,19 @@ const App = () => {
 
   // LOGIN FORM
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
+  const loginForm = () => {
+    return (
+      <Togglable buttonLabel="login">
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
         />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  );
+      </Togglable>
+    );
+  };
 
   //LOG OUT
   const logout = () => {
@@ -125,7 +117,11 @@ const App = () => {
   };
 
   // BLOG FORM
-
+  const blogForm = () => (
+    <Togglable buttonLabel="new blog" ref={blogFormRef}>
+      <BlogForm handleSubmit={addBlog} />
+    </Togglable>
+  );
   return (
     <>
       <ToastContainer />
