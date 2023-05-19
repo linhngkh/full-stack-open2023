@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Blog from "./components/Blog";
@@ -15,11 +17,19 @@ const App = () => {
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
+  const navigate = useNavigate();
+
   const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -92,8 +102,10 @@ const App = () => {
   //LOG OUT
   const logout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
+    window.location.reload();
     setUser("");
     setPassword("");
+    navigate("/");
     toast.success("Logout succeed!");
   };
 
