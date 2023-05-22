@@ -90,11 +90,13 @@ blogRouter.delete("/:id", async (req, res) => {
 
   const blog = await Blog.findById(req.params.id);
 
-  if (blog.user.toString() === decodedToken.id) {
+  if (blog.user && blog.user.toString() === decodedToken.id) {
     await Blog.findByIdAndRemove(req.params.id);
     res.status(204).end();
   } else {
-    res.status(404).end();
+    res
+      .status(404)
+      .json({ error: `Error occurred while deleting blog: ${error}` });
   }
 });
 module.exports = blogRouter;

@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const blogSchema = new mongoose.Schema({
-  _id: { type: String },
   title: String,
   author: String,
   url: String,
