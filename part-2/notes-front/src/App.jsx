@@ -55,7 +55,7 @@ const App = () => {
   };
 
   const addNote = (noteObject) => {
-    event.preventDefault();
+    noteFormRef.current.toggleVisibility();
 
     noteService.create(noteObject).then((returnedNote) => {
       setNotes(notes.concat(returnedNote));
