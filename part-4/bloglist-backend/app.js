@@ -29,6 +29,8 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(middleware.requestLogger);
+app.use(express.urlencoded({ extended: true }));
+
 
 app.use(middleware.tokenExtractor);
 

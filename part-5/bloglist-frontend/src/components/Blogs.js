@@ -4,12 +4,10 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
   const [view, setView] = useState(false);
 
   const addLikes = (blog) => {
-    updateLikes(blog.id, {
+    updateLikes( {
       user: blog.user,
-      author: blog.author,
-      likes: blog.likes,
-      title: blog.title,
-      url: blog.url,
+      ...blog,
+      likes: blog.likes + 1
     });
   };
 

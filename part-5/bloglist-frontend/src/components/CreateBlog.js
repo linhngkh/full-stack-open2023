@@ -27,7 +27,7 @@ const CreateBlog = ({ handleAddBlog }) => {
   );
 };
 
-CreateBlog.PropTypes = {
+CreateBlog.propTypes = {
   onInputChange: PropTypes.func.isRequired,
   createBlog: PropTypes.func.isRequired,
   newBlog: PropTypes.string.isRequired,
