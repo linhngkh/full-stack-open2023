@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import BlogForm from "./BlogForm";
+import PropTypes from "prop-types";
 
 const CreateBlog = ({ handleAddBlog }) => {
   const [newBlog, setNewBlog] = useState({ title: "", author: "", url: "" });
@@ -24,6 +25,12 @@ const CreateBlog = ({ handleAddBlog }) => {
       />
     </div>
   );
+};
+
+CreateBlog.PropTypes = {
+  onInputChange: PropTypes.func.isRequired,
+  createBlog: PropTypes.func.isRequired,
+  newBlog: PropTypes.string.isRequired,
 };
 
 export default CreateBlog;
