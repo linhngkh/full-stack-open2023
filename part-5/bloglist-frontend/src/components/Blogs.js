@@ -4,10 +4,10 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
   const [view, setView] = useState(false);
 
   const addLikes = (blog) => {
-    updateLikes( {
+    updateLikes({
       user: blog.user,
       ...blog,
-      likes: blog.likes + 1
+      likes: blog.likes + 1,
     });
   };
 
@@ -23,7 +23,7 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
   return (
     <div>
       <div className="pt-3 pl-2 border-solid border-slate-700 border-2 mb-5 flex gap-3 items-center">
-        <p>{blog.title}</p>
+        <p className="title">{blog.title}</p>
         <span>
           <button
             onClick={() => setView(true)}
@@ -37,7 +37,7 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
         <div className="pt-3 pl-2 border-solid border-slate-700 border-2 mb-5 flex gap-3 items-center">
           <div>
             <div className="flex gap-2">
-              <p>{blog.title}</p>
+              <p className="title">{blog.title}</p>
               <button
                 onClick={() => setView(false)}
                 className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"
@@ -45,9 +45,9 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
                 hide
               </button>
             </div>
-            <p>{blog.url}</p>
+            <p className="url">{blog.url}</p>
             <div className="flex gap-2">
-              <p>likes {blog.likes}</p>{" "}
+              <p className="likes">likes {blog.likes}</p>{" "}
               <span>
                 <button
                   onClick={() => addLikes(blog)}
@@ -58,7 +58,7 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
               </span>
             </div>
 
-            <p>{blog.author}</p>
+            <p className="author">{blog.author}</p>
           </div>
           <div className="">
             <button
