@@ -52,3 +52,23 @@ test(" clicking button and showing url, likes", async () => {
 // 5.15: Blog list tests, step3
 // Make a test, which ensures that if the like button is clicked twice, the event handler the component received as props is called twice.
 
+test("like button is clicked twice", () => {
+  const blog = {
+    user: "User",
+    author: "Author",
+    title: "Title",
+    likes: 0,
+    url: "Url",
+  };
+  const updateLikes = jest.fn();
+  const component = render(<Blogs blog={blog} updateLikes={updateLikes} />);
+
+  const viewButton = component.getByText("view");
+  fireEvent.click(viewButton);
+
+  const likeButton = component.getByText("like");
+  fireEvent.click(likeButton);
+  fireEvent.click(likeButton);
+
+  expect(updateLikes.mock.calls).toHaveLength(2);
+});
