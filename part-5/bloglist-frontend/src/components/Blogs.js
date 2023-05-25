@@ -21,9 +21,10 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
   };
 
   return (
-    <div>
+    <div className="blog-container">
       <div className="pt-3 pl-2 border-solid border-slate-700 border-2 mb-5 flex gap-3 items-center">
-        <p className="title">{blog.title}</p>
+        <p className="title"> {blog.title}</p>
+        <p className="author">{blog.author}</p>
         <span>
           <button
             onClick={() => setView(true)}
@@ -37,7 +38,7 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
         <div className="pt-3 pl-2 border-solid border-slate-700 border-2 mb-5 flex gap-3 items-center">
           <div>
             <div className="flex gap-2">
-              <p className="title">{blog.title}</p>
+              <p className="title"> {blog.title}</p>
               <button
                 onClick={() => setView(false)}
                 className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"
@@ -47,7 +48,7 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
             </div>
             <p className="url">{blog.url}</p>
             <div className="flex gap-2">
-              <p className="likes">likes {blog.likes}</p>{" "}
+              <p className="likes">likes {blog.likes ? blog.likes : "0"}</p>{" "}
               <span>
                 <button
                   onClick={() => addLikes(blog)}
