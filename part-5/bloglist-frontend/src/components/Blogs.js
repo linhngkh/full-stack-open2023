@@ -26,19 +26,21 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
         <p className="title"> {blog.title}</p>
         <p className="author">{blog.author}</p>
         <span>
-          <button
-            onClick={() => setView(true)}
-            className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"
-          >
-            view
-          </button>
+          {!view && (
+            <button
+              onClick={() => setView(true)}
+              className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"
+            >
+              view
+            </button>
+          )}
         </span>
       </div>
+
       {view && (
         <div className="pt-3 pl-2 border-solid border-slate-700 border-2 mb-5 flex gap-3 items-center">
           <div>
             <div className="flex gap-2">
-              <p className="title"> {blog.title}</p>
               <button
                 onClick={() => setView(false)}
                 className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"

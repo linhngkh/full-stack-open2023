@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,6 @@ import Blogs from "./components/Blogs";
 import Header from "./components/Header";
 
 import LoginForm from "./components/LoginForm";
-import Togglable from "./components/Togglable";
 import CreateBlog from "./components/CreateBlog";
 import Button from "./components/utils/Button";
 const App = () => {
