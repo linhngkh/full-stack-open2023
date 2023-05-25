@@ -8,8 +8,9 @@ import Blogs from "./components/Blogs";
 import Header from "./components/Header";
 
 import LoginForm from "./components/LoginForm";
-import CreateBlog from "./components/CreateBlog";
+
 import Button from "./components/utils/Button";
+import BlogForm from "./components/BlogForm";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
@@ -53,7 +54,7 @@ const App = () => {
       setUser("");
       setPassword("");
     } catch (error) {
-      toast.error(error?.data?.message || error.error);
+      toast.error(error.data.message || error.error);
     }
   };
 
@@ -65,23 +66,25 @@ const App = () => {
   };
 
   // ADD BLOG
-  const addBlog = async (title, author, url) => {
-    const blogObject = {
+  const addBlog = (e) => {
+    e.preventDefault();
+    const newBlog = {
       title,
       author,
       url,
       likes: 0,
     };
     try {
-      const blog = await blogService.create(blogObject);
-      setBlogs(blogs.concat(blog));
+      blogService.create(newBlog).then((newBlog) => {
+        setBlogs([...blogs, newBlog]);
+      });
 
       toast.success(`Added a new blog: ${title} by ${author}`, 3000);
       setAuthor("");
       setTitle("");
       setUrl("");
     } catch (error) {
-      toast.error(error?.data?.message || error.error);
+      toast.error(error.data.message || error.error);
     }
   };
 
@@ -137,7 +140,15 @@ const App = () => {
               <Button onClick={() => logout()}>Logout</Button>
             </div>
             <div className="mt-4 p-2">
-              <CreateBlog handleAddBlog={addBlog} />
+              <BlogForm
+                addBlog={addBlog}
+                title={title}
+                setTitle={setTitle}
+                author={author}
+                setAuthor={setAuthor}
+                url={url}
+                setUrl={setUrl}
+              />
             </div>
             <div>
               {blogs.map((blog, index) => (
