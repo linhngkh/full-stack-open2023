@@ -1,6 +1,5 @@
 import "@testing-library/jest-dom/extend-expect";
 import { render, fireEvent } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import BlogForm from "./BlogForm";
 
 // 5.16: Blog list tests, step4
@@ -11,7 +10,6 @@ test("<BlogForm/> call event handler and it received as props, when a new blog c
   const setTitle = jest.fn();
   const setAuthor = jest.fn();
   const setUrl = jest.fn();
-  const user = userEvent.setup();
 
   const component = render(
     <BlogForm
