@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Blogs from "./components/Blogs";
-import Header from "./components/Header";
-
 import LoginForm from "./components/LoginForm";
-
 import BlogForm from "./components/BlogForm";
+import { useNavigate } from "react-router-dom";
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
@@ -18,9 +16,7 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
-
   const navigate = useNavigate();
-
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -43,25 +39,18 @@ const App = () => {
         password,
       });
       if (user) {
-        window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+        window.localStorage.setItem("user", JSON.stringify(user));
       }
 
       blogService.setToken(user.token);
       setUser(user);
-      navigate("/");
+
       toast.success("Succeeded login!");
       setUser("");
       setPassword("");
     } catch (error) {
       toast.error(error.message);
     }
-  };
-
-  //LOG OUT
-  const logout = () => {
-    window.localStorage.removeItem("loggedBlogappUser");
-    setUser(null);
-    window.location.reload();
   };
 
   // ADD BLOG
@@ -88,31 +77,26 @@ const App = () => {
   };
 
   // UPDATE BLOG
-  const updateLikes = async (id, updateBlog) => {
-    try {
-      await blogService.update(id, updateBlog).then((returnedBlog) => {
-        const updatedBlogs = blogs.map((blog) =>
-          blog.id !== id ? blog : returnedBlog
-        );
-        const sortedBlog = updatedBlogs.sort((a, b) => b.likes - a.likes);
-
-        setBlogs(sortedBlog);
-      });
-      toast.success("Successful updated like");
-    } catch (error) {
-      toast.error("Cant update Likes");
-    }
+  const updateLike = (id, blogObject) => {
+    blogService.update(id, blogObject).then((returnedBlog) => {
+      const updateBlogs = blogs.map((blog) =>
+        blog.id !== id ? blog : returnedBlog
+      );
+      const sortBlogs = updateBlogs.sort((b1, b2) => b1.likes - b2.likes);
+      console.log(sortBlogs);
+      setBlogs(sortBlogs);
+    });
   };
 
   // DELETE BLOG
-  const deleteBlog = async (id) => {
+  const deleteBlog = (id) => {
     try {
-      await blogService.deleteOne(id).then(() => {
-        const removeBlog = blogs.filter((blog) => blog.id !== id);
-        const sortedBlog = removeBlog.sort((a, b) => b.likes - a.likes);
-        setBlogs(sortedBlog);
+      blogService.remove(id).then(() => {
+        const filterBlogs = blogs.filter((blog) => blog.id !== id);
+        const sortBlogs = filterBlogs.sort((b1, b2) => b1.likes - b2.likes);
+        setBlogs(sortBlogs);
       });
-      toast.success("Successful delete blog");
+      toast.success("ok");
     } catch (error) {
       toast.error("Cant delete blog");
     }
@@ -132,11 +116,16 @@ const App = () => {
           />
         ) : (
           <>
-            <Header logout={logout} />
-            <div className="p-2 w-1/3">
-              <h1>blogs</h1>
-              <p>{username} logged in</p>
-            </div>
+            <button
+              className="bg-slate-500 text-white px-5 py-2"
+              onClick={() => {
+                window.localStorage.removeItem("user");
+                setUser(null);
+                navigate("/");
+              }}
+            >
+              Log out
+            </button>
             <div className="mt-4 p-2">
               <BlogForm
                 addBlog={addBlog}
@@ -153,7 +142,7 @@ const App = () => {
                 <Blogs
                   blog={blog}
                   key={index}
-                  updateLikes={updateLikes}
+                  updateLike={updateLike}
                   deleteBlog={deleteBlog}
                 />
               ))}
