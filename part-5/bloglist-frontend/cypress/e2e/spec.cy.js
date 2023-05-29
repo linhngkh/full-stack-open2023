@@ -1,4 +1,4 @@
-describe("Blogs ", () => {
+describe("Blogs app", function () {
   beforeEach(() => {
     cy.request("POST", "http://localhost:3003/api/testing/reset");
     const user = {
@@ -10,11 +10,20 @@ describe("Blogs ", () => {
     cy.visit("http://localhost:3000");
   });
 
-  it("front page can be opened", () => {
+  it("Login form is shown", function () {
     cy.contains("Log in to application");
   });
 
-  describe("when logged in", () => {
+  it.only("login fails with wrong password", function () {
+    cy.contains("Login").click();
+    cy.get("#username").type("linhtinhtinh");
+    cy.get("#password").type("wrong");
+    cy.get("#login-button").click();
+
+    cy.contains("Request failed with status code 401");
+  });
+
+  describe("when logged in", function () {
     beforeEach(() => {
       cy.contains("Login").click();
       cy.get("#username").type("linhtinhtinh");
@@ -27,11 +36,11 @@ describe("Blogs ", () => {
     });
 
     it("a new blog can be created", () => {
-      cy.contains("new blog").click();
-      cy.get("#title").type("Top of the World");
-      cy.get("#author").type("Carpenters");
-      cy.get("#url").type("N/A");
-      cy.get("#likes").type("2");
+      cy.contains("create").click();
+      cy.get("#title").type("testing");
+      cy.get("#author").type("Linh");
+      cy.get("#url").type("http://linh.blog");
+      cy.get("#likes").type("0");
       cy.get("#submit").click();
       cy.contains("Added a new blog");
     });
