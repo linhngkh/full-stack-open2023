@@ -77,15 +77,19 @@ const App = () => {
   };
 
   // UPDATE BLOG
-  const updateLike = (id, blogObject) => {
-    blogService.update(id, blogObject).then((returnedBlog) => {
-      const updateBlogs = blogs.map((blog) =>
-        blog.id !== id ? blog : returnedBlog
-      );
-      const sortBlogs = updateBlogs.sort((b1, b2) => b1.likes - b2.likes);
-      console.log(sortBlogs);
-      setBlogs(sortBlogs);
-    });
+  const updateLikes = (id, blogObject) => {
+    try {
+      blogService.update(id, blogObject).then((returnedBlog) => {
+        const updateBlogs = blogs.map((blog) =>
+          blog.id !== id ? blog : returnedBlog
+        );
+        const sortBlogs = updateBlogs.sort((b1, b2) => b1.likes - b2.likes);
+        console.log(sortBlogs);
+        setBlogs(sortBlogs);
+      });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   // DELETE BLOG
@@ -142,7 +146,7 @@ const App = () => {
                 <Blogs
                   blog={blog}
                   key={index}
-                  updateLike={updateLike}
+                  updateLikes={updateLikes}
                   deleteBlog={deleteBlog}
                 />
               ))}

@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 
-const Blogs = ({ blog, updateLike, deleteBlog }) => {
+const Blogs = ({ blog, updateLikes, deleteBlog }) => {
   const [view, setView] = useState(false);
 
-  const addLikes = (blog) => {
-    updateLike({
+  const addOne = (blog) => {
+    updateLikes(blog.id, {
       user: blog.user,
-      ...blog,
       likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
     });
   };
 
@@ -53,7 +55,7 @@ const Blogs = ({ blog, updateLike, deleteBlog }) => {
               <p className="likes">likes {blog.likes ? blog.likes : "0"}</p>{" "}
               <span>
                 <button
-                  onClick={() => addLikes(blog)}
+                  onClick={() => addOne(blog)}
                   className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"
                 >
                   like
