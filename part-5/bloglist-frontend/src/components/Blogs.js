@@ -55,6 +55,7 @@ const Blogs = ({ blog, updateLikes, deleteBlog }) => {
               <p className="likes">likes {blog.likes ? blog.likes : "0"}</p>{" "}
               <span>
                 <button
+                  id="update-likes"
                   onClick={() => addOne(blog)}
                   className="px-2 py-0.5 bg-slate-400 rounded-lg text-white"
                 >
