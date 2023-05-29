@@ -11,35 +11,30 @@ userRouter.get("/", async (req, res) => {
   res.json(users.map((u) => u.toJSON()));
 });
 
-userRouter.post("/", async (req, res, next) => {
+userRouter.post("/", async (request, response, next) => {
   try {
-    const body = req.body;
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(body.password, saltRounds);
+    const { username, password, name } = request.body;
 
-    if (!body.username || !body.password) {
-      return res.status(400);
-    } else if (body.username.length < 3 || body.password.length < 3) {
-      return res.status(400).json({ error: "password minimum length 3" });
-    } else {
-      const user = new User({
-        username: body.username,
-        name: body.name,
-        passwordHash,
+    if (!password || password.length < 3) {
+      return response.status(400).send({
+        error: "Pasword minimum length 3",
       });
-
-      const users = await User.find({});
-      const uniqueUsername = users.filter((u) => u.username === user.username);
-
-      if (!uniqueUsername.length === 0) {
-        const savedUser = await user.save();
-        res.json(savedUser);
-      } else {
-        res.status(400).json({ error: "expected `username` to be unique" });
-      }
     }
-  } catch (error) {
-    next(error);
+
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    const user = new User({
+      username,
+      name,
+      passwordHash,
+    });
+
+    const savedUser = await user.save();
+
+    response.json(savedUser);
+  } catch (exception) {
+    next(exception);
   }
 });
 

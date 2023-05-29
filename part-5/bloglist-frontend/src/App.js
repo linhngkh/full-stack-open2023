@@ -9,7 +9,6 @@ import Header from "./components/Header";
 
 import LoginForm from "./components/LoginForm";
 
-import Button from "./components/utils/Button";
 import BlogForm from "./components/BlogForm";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -61,7 +60,7 @@ const App = () => {
   //LOG OUT
   const logout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
-    blogService.setToken(null);
+    setUser(null);
     window.location.reload();
   };
 
@@ -133,11 +132,10 @@ const App = () => {
           />
         ) : (
           <>
-            <Header />
+            <Header logout={logout} />
             <div className="p-2 w-1/3">
               <h1>blogs</h1>
               <p>{username} logged in</p>
-              <Button onClick={() => logout()}>Logout</Button>
             </div>
             <div className="mt-4 p-2">
               <BlogForm

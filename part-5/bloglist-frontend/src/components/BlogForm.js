@@ -17,7 +17,7 @@ const BlogForm = ({
 
       <form onSubmit={addBlog} className="flex flex-col w-1/3 gap-1">
         <input
-          placeholder="write note content here"
+          placeholder="Title"
           id="title"
           type="title"
           name="title"
@@ -27,7 +27,7 @@ const BlogForm = ({
         />
 
         <input
-          placeholder="write note content here"
+          placeholder="Author"
           id="author"
           type="author"
           name="author"
@@ -37,7 +37,7 @@ const BlogForm = ({
         />
 
         <input
-          placeholder="write note content here"
+          placeholder="Url"
           id="url"
           type="url"
           name="url"
