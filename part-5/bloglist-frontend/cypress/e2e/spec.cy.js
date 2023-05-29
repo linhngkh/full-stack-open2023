@@ -3,9 +3,11 @@ describe("Blog app", function () {
     cy.request("POST", "http://localhost:3003/api/testing/reset");
     // create here a user to backend
     const user = {
-      username: "root",
-      password: "sekret",
+      username: "linhtinh",
+      name: "Linh",
+      password: "salainen",
     };
+    cy.request("POST", "http://localhost:3003/api/users/", user);
     cy.visit("http://localhost:3000");
   });
 

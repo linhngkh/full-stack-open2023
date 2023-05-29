@@ -54,7 +54,7 @@ const App = () => {
       setUser("");
       setPassword("");
     } catch (error) {
-      toast.error(error.data.message || error.error);
+      toast.error(error.message);
     }
   };
 

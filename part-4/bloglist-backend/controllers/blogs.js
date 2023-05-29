@@ -78,6 +78,7 @@ blogRouter.put("/:id", async (req, res, next) => {
   }
 });
 
+// DELETE
 blogRouter.delete("/:id", async (req, res) => {
   if (!req.token) {
     return res.status(401).json({ error: "Token is missing" });
