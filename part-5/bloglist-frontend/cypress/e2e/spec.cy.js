@@ -3,16 +3,13 @@ describe("Blog app", function () {
     cy.request("POST", "http://localhost:3003/api/testing/reset");
     // create here a user to backend
     const user = {
-      name: "root",
-      username: "Superuser",
+      username: "root",
       password: "sekret",
     };
-    cy.request("POST", "http://localhost:3003/api/users/", user);
     cy.visit("http://localhost:3000");
   });
 
-  it("Login form is shown", function () {
-    cy.visit("http://localhost:3000");
-    cy.contains("Login").click();
+  it("front page can be opened", function () {
+    cy.contains("Log in to application, username, password, Login");
   });
 });

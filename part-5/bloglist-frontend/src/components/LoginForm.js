@@ -9,7 +9,6 @@ const LoginForm = ({
   username,
   password,
 }) => {
-  const inputStyles = `w-full bg-slate-200 mb-3 rounded-lg px-3 py-2`;
   return (
     <div className="flex mx-auto flex-col h-screen justify-center items-center ">
       <h2 className="text-xl p-4 font-bold">Log in to application</h2>
@@ -17,24 +16,28 @@ const LoginForm = ({
         <div>
           username
           <input
+            id="username"
             type="text"
             value={username}
             name="Username"
-            className={inputStyles}
+            className="w-full bg-slate-200 mb-3 rounded-lg px-3 py-2"
             onChange={handleUsernameChange}
           />
         </div>
         <div>
           password
           <input
+            id="password"
             type="password"
             value={password}
             name="Password"
-            className={inputStyles}
+            className="w-full bg-slate-200 mb-3 rounded-lg px-3 py-2"
             onChange={handlePasswordChange}
           />
         </div>{" "}
-        <Button type="submit">Login</Button>
+        <Button id="login-button" type="submit">
+          Login
+        </Button>
       </form>
     </div>
   );
