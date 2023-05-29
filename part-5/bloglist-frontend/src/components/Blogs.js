@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-const Blogs = ({ blog, updateLikes, deleteBlog }) => {
+const Blogs = ({ blog, updateLike, deleteBlog }) => {
   const [view, setView] = useState(false);
 
   const addLikes = (blog) => {
-    updateLikes({
+    updateLike({
       user: blog.user,
       ...blog,
       likes: blog.likes + 1,

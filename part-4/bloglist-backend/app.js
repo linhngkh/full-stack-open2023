@@ -17,13 +17,14 @@ const loginRouter = require("./controllers/login");
 logger.info("Connecting to", config.MONGODB_URI);
 
 mongoose
-  .connect(config.MONGODB_URI)
+  .connect(config.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     logger.info(`Connected to Mongodb`.bgYellow);
   })
   .catch((error) => logger.error("Error connecting to mongodb", error.message));
-
-mongoose.set("strictPopulate", false);
 
 app.use(cors());
 app.use(express.json());

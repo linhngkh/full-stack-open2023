@@ -80,6 +80,8 @@ blogRouter.put("/:id", async (req, res, next) => {
 
 // DELETE
 blogRouter.delete("/:id", async (req, res) => {
+  const blog = await Blog.findById(req.params.id);
+
   if (!req.token) {
     return res.status(401).json({ error: "Token is missing" });
   }
@@ -88,8 +90,6 @@ blogRouter.delete("/:id", async (req, res) => {
   if (!decodedToken.id) {
     return res.status(401).json({ error: "Token missing or invalid" });
   }
-
-  const blog = await Blog.findById(req.params.id);
 
   if (blog.user && blog.user.toString() === decodedToken.id) {
     await Blog.findByIdAndRemove(req.params.id);
