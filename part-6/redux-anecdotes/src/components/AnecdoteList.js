@@ -10,15 +10,17 @@ const AnecdoteList = () => {
   };
   return (
     <>
-      {anecdotes.map((anecdote, index) => (
-        <div key={index}>
-          <div>{anecdote.content}</div>
-          <div>
-            has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+      {anecdotes
+        .sort((a, b) => b.votes - a.votes)
+        .map((anecdote, index) => (
+          <div key={index}>
+            <div>{anecdote.content}</div>
+            <div>
+              has {anecdote.votes}
+              <button onClick={() => vote(anecdote.id)}>vote</button>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </>
   );
 };

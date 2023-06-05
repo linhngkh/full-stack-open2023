@@ -12,3 +12,10 @@ export const addNew = (content) => {
     data: { content },
   };
 };
+
+export const filterChange = (filter) => {
+  return {
+    type: "SET_FILTER",
+    data: filter,
+  };
+};
