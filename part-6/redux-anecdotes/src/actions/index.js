@@ -9,6 +9,6 @@ export const voteIncrement = (id) => {
 export const addNew = (content) => {
   return {
     type: "ADD_NEW_ONE",
-    data: content,
+    data: { content },
   };
 };
