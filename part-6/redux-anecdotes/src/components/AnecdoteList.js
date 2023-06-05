@@ -3,14 +3,22 @@ import { voteIncrement } from "../actions";
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
-  const anecdotes = useSelector((state) => state.anecdotes);
+  const filterAnecdotes = useSelector(({ filter, anecdotes }) => {
+    if (filter) {
+      return anecdotes.filter((anecdote) =>
+        anecdote.content.toLowerCase().includes(filter)
+      );
+    } else {
+      return anecdotes;
+    }
+  });
 
   const vote = (id) => {
     dispatch(voteIncrement(id));
   };
   return (
     <>
-      {anecdotes
+      {filterAnecdotes
         .sort((a, b) => b.votes - a.votes)
         .map((anecdote, index) => (
           <div key={index}>
