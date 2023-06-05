@@ -39,11 +39,4 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-// action creators
-export const voteIncrement = (id) => {
-  return {
-    type: "INCREMENT_VOTE_COUNT",
-    data: { id },
-  };
-};
 export default reducer;
