@@ -5,3 +5,10 @@ export const voteIncrement = (id) => {
     data: { id },
   };
 };
+
+export const addNew = (content) => {
+  return {
+    type: "ADD_NEW_ONE",
+    data: content,
+  };
+};

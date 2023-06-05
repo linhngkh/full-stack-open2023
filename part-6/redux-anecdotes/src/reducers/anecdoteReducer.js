@@ -17,12 +17,9 @@ const asObject = (anecdote) => {
   };
 };
 
-const initialState = anecdotesAtStart.map(asObject);
+export const initialState = anecdotesAtStart.map(asObject);
 
-// action types
-const INCREMENT_VOTE_COUNT = "INCREMENT_VOTE_COUNT";
-
-const reducer = (state = initialState, action) => {
+const anecdoteReducer = (state = initialState, action) => {
   switch (action.type) {
     case "INCREMENT_VOTE_COUNT":
       const id = action.data.id;
@@ -34,9 +31,12 @@ const reducer = (state = initialState, action) => {
       return state.map((anecdote) =>
         anecdote.id !== id ? anecdote : changedAnecdote
       );
+    case "ADD_NEW_ONE":
+      return [...state, action.data];
+
     default:
       return state;
   }
 };
 
-export default reducer;
+export default anecdoteReducer;
