@@ -10,7 +10,7 @@ const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(initializeAnecdotes());
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch]); 
 
   return (
     <div>
