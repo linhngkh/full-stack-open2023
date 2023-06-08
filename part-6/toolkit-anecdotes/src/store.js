@@ -5,9 +5,10 @@ import notifyReducer from "./reducers/notifyReducer";
 
 const store = configureStore({
   reducer: {
+    //name =""
     anecdotes: anecdoteReducer,
     filter: filterReducer,
-    notifications: notifyReducer,
+    notify: notifyReducer,
   },
 });
 
