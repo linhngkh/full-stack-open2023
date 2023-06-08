@@ -7,13 +7,13 @@ const notifySlice = createSlice({
   initialState,
   reducers: {
     notifyReducer(state, action) {
-      return action.payload;
+      state.push(action.payload);
     },
-    removeNotification: (state) => {
-      state.notification = null;
+    removeNotifyReducer: () => {
+      return initialState;
     },
   },
 });
 
-export const { notifyReducer, removeNotification } = notifySlice.actions;
+export const { notifyReducer, removeNotifyReducer } = notifySlice.actions;
 export default notifySlice.reducer;

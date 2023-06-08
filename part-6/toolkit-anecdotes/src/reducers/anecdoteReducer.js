@@ -26,8 +26,7 @@ const anecdoteSlice = createSlice({
   initialState,
   reducers: {
     createAnecdote(state, action) {
-      const newAnecdote = action.payload;
-      state.push(newAnecdote);
+      state.push(action.payload);
     },
     voteAnecdote(state, action) {
       const id = action.payload;
