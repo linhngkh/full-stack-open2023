@@ -1,18 +1,20 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
+import Anecdote from "./components/Anecdote";
+
 const Menu = () => {
   const padding = {
     paddingRight: 5,
   };
   return (
     <div>
-      <Link href="/anecdotes" style={padding}>
+      <Link to="/" style={padding}>
         anecdotes
       </Link>
-      <Link href="/create" style={padding}>
+      <Link to="/create" style={padding}>
         create new
       </Link>
-      <Link href="/about" style={padding}>
+      <Link to="/about" style={padding}>
         about
       </Link>
     </div>
@@ -24,7 +26,9 @@ const AnecdoteList = ({ anecdotes }) => (
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map((anecdote) => (
-        <li key={anecdote.id}>{anecdote.content}</li>
+        <li key={anecdote.id}>
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
       ))}
     </ul>
   </div>
@@ -154,9 +158,15 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
+      <Routes>
+        <Route
+          path="/anecdotes/:id"
+          element={<Anecdote anecdotes={anecdotes} />}
+        />
+        <Route path="/about" element={<About />} />
+        <Route path="/create" element={<CreateNew />} />
+        <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
+      </Routes>
       <Footer />
     </div>
   );
