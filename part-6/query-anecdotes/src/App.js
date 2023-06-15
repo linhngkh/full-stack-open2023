@@ -2,11 +2,13 @@ import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
 import { useQuery } from "react-query";
 import { getAnecdotes } from "./api/request";
+
 const App = () => {
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["anecdotes"],
     queryFn: getAnecdotes,
     retry: 1,
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) {

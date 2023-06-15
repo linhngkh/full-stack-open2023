@@ -9,3 +9,6 @@ export const getAnecdotes = async () => {
     throw new Error("anecdote service not  due to problems in server");
   }
 };
+
+export const addNewAnecdote =  (newAnecdote) =>
+  axios.post(baseUrl, newAnecdote).then((response) => response.data);
