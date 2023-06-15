@@ -9,7 +9,7 @@ const Menu = () => {
   return (
     <div>
       <Link to="/" style={padding}>
-        anecdotes
+        anecdotes       
       </Link>
       <Link to="/create" style={padding}>
         create new
