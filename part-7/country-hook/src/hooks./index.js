@@ -23,7 +23,7 @@ export const useCountry = (name) => {
       axios
         .get(`https://restcountries.com/v3.1/name/${name}`)
         .then((response) => setCountry(response.data[0]))
-        .catch((error) => setCountry(null));
+        .catch((error) => console.log(error.message));
     }
   }, [name]);
 
