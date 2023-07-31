@@ -97,9 +97,10 @@ const typeDefs = `
   type Query {
     authorCount: Int!
     bookCount: Int! 
-    allBooks: [Books!]!
+    allBooks(author: String, genre: String): [Books!]!
     allAuthors: [Author!]!
   }
+  
 `;
 
 const resolvers = {
@@ -107,6 +108,9 @@ const resolvers = {
     authorCount: () => authors.length,
     bookCount: () => books.length,
     allBooks: () => books,
+    // allAuthors: () => {
+    //   return Author.find({}).populate("books");
+    // },
   },
 };
 
