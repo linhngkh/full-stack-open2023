@@ -1,6 +1,5 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const { gql } = require("apollo-server");
 
 let authors = [
   {
@@ -80,7 +79,7 @@ let books = [
   },
 ];
 
-const typeDefs = gql`
+const typeDefs = `
   type Author {
     name: String!
     born: Int
@@ -97,6 +96,7 @@ const typeDefs = gql`
 
   type Query {
     authorCount: Int!
+    bookCount: Int! 
     allBooks: [Books!]!
     allAuthors: [Author!]!
   }
@@ -105,8 +105,8 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     authorCount: () => authors.length,
+    bookCount: () => books.length,
     allBooks: () => books,
-    allAuthors: () => authors.find({}),
   },
 };
 
