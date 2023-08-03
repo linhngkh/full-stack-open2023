@@ -89,6 +89,7 @@ const typeDefs = `
     id: ID!
   }
 
+
   type Books {
     title: String!
     author: String!
@@ -116,21 +117,15 @@ editAuthor(name: String!, setBornTo: Int!): Author
   }
   
 `;
-const getBookCountForAuthor = (authorId) => {
-  return books.filter((book) => book.authorId === authorId).length;
-};
+
 const resolvers = {
   Query: {
     authorCount: () => authors.length,
     bookCount: () => books.length,
     allBooks: () => books,
-    allAuthors: () => {
-      return authors.map((author) => ({
-        ...author,
-        bookCount: getBookCountForAuthor(author.id),
-      }));
-    },
+    allAuthors: () => authors.find({}),
   },
+
   Mutation: {
     addBook: (root, args) => {
       if (books.find((book) => book.name === args.name)) {
