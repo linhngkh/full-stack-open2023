@@ -65,9 +65,6 @@ enum YesNo {
   ): Person
 }
 
-
-
-
 `;
 // populating the data for a single field in schema
 const resolvers = {

@@ -1,5 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
+const { GraphQLError } = require("graphql");
 const { v1: uuid } = require("uuid");
 
 let authors = [
@@ -102,6 +103,9 @@ type Mutation {
     published: Int!
     genres: [String!]!
   ): Books
+
+editAuthor(name: String!, setBornTo: Int!): Author
+
 }
 
   type Query {
@@ -112,21 +116,46 @@ type Mutation {
   }
   
 `;
-
+const getBookCountForAuthor = (authorId) => {
+  return books.filter((book) => book.authorId === authorId).length;
+};
 const resolvers = {
   Query: {
     authorCount: () => authors.length,
     bookCount: () => books.length,
     allBooks: () => books,
-    // allAuthors: () => {
-    //   return Author.find({}).populate("books");
-    // },
+    allAuthors: () => {
+      return authors.map((author) => ({
+        ...author,
+        bookCount: getBookCountForAuthor(author.id),
+      }));
+    },
   },
   Mutation: {
     addBook: (root, args) => {
+      if (books.find((book) => book.name === args.name)) {
+        throw new GraphQLError("Name must be unique", {
+          extensions: {
+            code: "BAD_BOOK_INPUT",
+            invalidArgs: args.name,
+          },
+        });
+      }
       const book = { ...args, id: uuid() };
       books = books.concat(book);
       return book;
+    },
+
+    editAuthor: (root, args) => {
+      const author = authors.find((author) => author.name === args.name);
+      if (!author) {
+        return null;
+      }
+      const updatedAuthor = { ...author, born: args.setBornTo };
+      authors = authors.map((author) =>
+        author.name === args.name ? updatedAuthor : author
+      );
+      return updatedAuthor;
     },
   },
 };
